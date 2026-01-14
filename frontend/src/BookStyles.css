@@ -1,0 +1,136 @@
+.book-container {
+    perspective: 1500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+}
+
+.book-spread {
+    display: flex;
+    background-color: #fdfbf7;
+    /* Off-white paper color */
+    box-shadow:
+        0 20px 30px -10px rgba(0, 0, 0, 0.5),
+        0 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    position: relative;
+    transition: transform 0.5s ease;
+    max-width: 100%;
+}
+
+.book-page {
+    position: relative;
+    width: 50%;
+    min-width: 300px;
+    /* Reduced min-width to fit smaller screens better */
+    min-height: 500px;
+    /* Reduced min-height */
+    aspect-ratio: 1 / 1.414;
+    /* A4 aspect ratio approximation */
+    background: #fff;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* Shadows to simulate page curve towards spine */
+.page-left {
+    border-radius: 8px 0 0 8px;
+    background: linear-gradient(to right, #fdfbf7 95%, #e0e0e0 100%);
+    box-shadow: inset -10px 0 20px -10px rgba(0, 0, 0, 0.1);
+    border-right: 1px solid #ddd;
+}
+
+.page-right {
+    border-radius: 0 8px 8px 0;
+    background: linear-gradient(to left, #fdfbf7 95%, #e0e0e0 100%);
+    box-shadow: inset 10px 0 20px -10px rgba(0, 0, 0, 0.1);
+    border-left: 1px solid #ddd;
+}
+
+.book-spine {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: rgba(0, 0, 0, 0.1);
+    transform: translateX(-50%);
+    z-index: 10;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.page-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 20px;
+}
+
+.page-number {
+    position: absolute;
+    bottom: 10px;
+    color: #888;
+    font-size: 0.8rem;
+    font-family: serif;
+}
+
+/* Single page view (Cover or Mobile) */
+.single-page-view .book-spread {
+    border-radius: 8px;
+}
+
+.single-page-view .book-page {
+    width: 100%;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
+}
+
+.active-reading-indicator {
+    position: absolute;
+    inset: 0;
+    border: 3px solid rgba(59, 130, 246, 0.5);
+    /* Blue glow */
+    pointer-events: none;
+    z-index: 20;
+    border-radius: inherit;
+    box-shadow: inset 0 0 15px rgba(59, 130, 246, 0.2);
+    animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+    0% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.5;
+    }
+}
+
+@media (max-width: 768px) {
+    .book-spread {
+        flex-direction: column;
+    }
+
+    .book-page {
+        width: 100%;
+        min-width: auto;
+        min-height: auto;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .book-spine {
+        display: none;
+    }
+}

@@ -1,0 +1,10 @@
+node_modules/
+__pycache__/
+*.pyc
+venv/
+.env
+uploads/
+audio_cache/
+.DS_Store
+dist/
+coverage/
