@@ -7,3 +7,6 @@ edge-tts
 pydantic
 numpy
 Pillow
+deep-translator
+langdetect
+gunicorn

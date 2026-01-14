@@ -22,13 +22,13 @@
 
 .book-page {
     position: relative;
-    width: 50%;
-    min-width: 300px;
-    /* Reduced min-width to fit smaller screens better */
-    min-height: 500px;
-    /* Reduced min-height */
-    aspect-ratio: 1 / 1.414;
-    /* A4 aspect ratio approximation */
+    /* User request: Half of 215.9mm x 279.4mm */
+    /* ~108mm x 140mm => ~408px x 528px at 96DPI */
+    width: 408px;
+    height: 528px;
+    /* Remove min/max constraints to enforce size */
+    flex-shrink: 0;
+    /* Prevent shrinking if possible, though responsive media query handles mobile */
     background: #fff;
     overflow: hidden;
     display: flex;

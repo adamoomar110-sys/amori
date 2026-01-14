@@ -6,8 +6,6 @@
 body {
     margin: 0;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background: #0f0f13;
-    color: white;
 }
 
 @keyframes fadeInDown {
@@ -15,6 +13,7 @@ body {
         opacity: 0;
         transform: translateY(-20px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);

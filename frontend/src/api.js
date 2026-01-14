@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = '/api'; // Using proxy
+const API_BASE = import.meta.env.VITE_API_URL || '/api'; // Use env var for Prod/Android, proxy for Dev
 
 export const uploadPDF = async (file) => {
     const formData = new FormData();
@@ -24,8 +24,8 @@ export const deleteBook = async (docId) => {
     return response.data;
 };
 
-export const getAudioUrl = (docId, pageNum, voice = "es-AR-TomasNeural") => {
-    return `${API_BASE}/audio/${docId}/${pageNum}?voice=${voice}`;
+export const getAudioUrl = (docId, pageNum, voice = "es-AR-TomasNeural", translate = false) => {
+    return `${API_BASE}/audio/${docId}/${pageNum}?voice=${voice}&translate=${translate}`;
 };
 
 export const getPageImageUrl = (docId, pageNum) => {

@@ -12,6 +12,14 @@ class PDFProcessor:
         # languages: ['en', 'es'] given the user query was Spanish, likely Spanish is needed.
         self.reader = easyocr.Reader(['es', 'en'], verbose=False) 
 
+    def clean_text(self, text):
+        """Cleans text for smoother TTS: removes newlines, fixes spacing."""
+        # Replace newlines with space to prevent artificial pauses at line ends
+        text = text.replace('\n', ' ')
+        # Normalize whitespace (multiple spaces -> single space)
+        text = ' '.join(text.split())
+        return text
+
     def process_pdf(self, file_bytes):
         doc = fitz.open(stream=file_bytes, filetype="pdf")
         pages_data = []
@@ -22,20 +30,27 @@ class PDFProcessor:
             # Simple heuristic: if text is very short, try OCR
             if len(text.strip()) < 50:
                 print(f"Page {page_num + 1}: Low text content, attempting OCR...")
-                pix = page.get_pixmap()
-                img_bytes = pix.tobytes("png")
-                image = Image.open(io.BytesIO(img_bytes))
-                
-                # Convert to numpy array for EasyOCR
-                image_np = np.array(image)
-                
-                # Perform OCR
-                result = self.reader.readtext(image_np, detail=0)
-                text = " ".join(result)
+                try:
+                    pix = page.get_pixmap()
+                    img_bytes = pix.tobytes("png")
+                    image = Image.open(io.BytesIO(img_bytes))
+                    
+                    # Convert to numpy array for EasyOCR
+                    image_np = np.array(image)
+                    
+                    # Perform OCR
+                    result = self.reader.readtext(image_np, detail=0)
+                    text = " ".join(result)
+                except Exception as e:
+                    print(f"OCR Error on page {page_num + 1}: {e}")
+                    text = "" # Fallback
             
+            # Clean the text for better TTS fluidity
+            cleaned_text = self.clean_text(text)
+
             pages_data.append({
                 "page": page_num + 1,
-                "text": text
+                "text": cleaned_text
             })
             
         return pages_data

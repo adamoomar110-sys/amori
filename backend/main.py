@@ -7,6 +7,8 @@ import os
 import uuid
 from typing import List
 from services import PDFProcessor, TTSGenerator
+from deep_translator import GoogleTranslator
+from langdetect import detect
 
 app = FastAPI()
 
@@ -202,7 +204,7 @@ async def delete_book(doc_id: str):
     return {"status": "success", "message": "Book deleted"}
 
 @app.get("/audio/{doc_id}/{page_num}")
-async def get_audio(doc_id: str, page_num: int, voice: str = "es-AR-TomasNeural"):
+async def get_audio(doc_id: str, page_num: int, voice: str = "es-AR-TomasNeural", translate: bool = False):
     if doc_id not in documents:
         raise HTTPException(status_code=404, detail="Document not found")
     
@@ -211,21 +213,57 @@ async def get_audio(doc_id: str, page_num: int, voice: str = "es-AR-TomasNeural"
         raise HTTPException(status_code=404, detail="Page not found")
         
     page_data = pages[page_num - 1]
-    text = page_data["text"]
+    display_text = page_data["text"]
     
-    # Include voice in filename to support switching
-    audio_filename = f"{doc_id}_p{page_num}_{voice}.mp3"
+    # Process text for TTS (remove newlines, etc.)
+    # We do this here to ensure even old uploaded books get the improved fluidity
+    tts_text = pdf_processor.clean_text(display_text)
+    
+    # Handle Translation Logic
+    is_translated = False
+    target_voice = voice
+    
+    if translate and tts_text.strip():
+        try:
+            # Detect source language
+            detected_lang = detect(tts_text)
+            
+            # Logic: If EN -> ES, If ES -> EN
+            target_lang = None
+            
+            if detected_lang == 'en':
+                target_lang = 'es'
+                target_voice = "es-AR-TomasNeural" # Force Spanish voice
+            elif detected_lang == 'es':
+                target_lang = 'en'
+                target_voice = "en-US-GuyNeural" # Force English voice
+                
+            if target_lang:
+                # Perform translation
+                translator = GoogleTranslator(source='auto', target=target_lang)
+                tts_text = translator.translate(tts_text)
+                is_translated = True
+                print(f"Translated page {page_num} from {detected_lang} to {target_lang}")
+        except Exception as e:
+            print(f"Translation error: {e}")
+            # Fallback to original text if translation fails
+            pass
+
+    # Include voice, 'smooth' tag, and 'trans' tag to version the cache
+    trans_tag = "_trans" if is_translated else ""
+    audio_filename = f"{doc_id}_p{page_num}_{target_voice}_smooth{trans_tag}.mp3"
     audio_path = os.path.join(AUDIO_DIR, audio_filename)
     
     if not os.path.exists(audio_path):
-        if not text.strip():
+        if not tts_text.strip():
              # Actually let's generate a silence or a message "No text"
              # Create a temporary generator for this request
-             temp_tts = TTSGenerator(voice=voice)
-             await temp_tts.generate_audio("Sin texto en esta página.", audio_path)
+             temp_tts = TTSGenerator(voice=target_voice)
+             msg = "Sin texto." if target_voice.startswith("es") else "No text."
+             await temp_tts.generate_audio(msg, audio_path)
         else:
-             temp_tts = TTSGenerator(voice=voice)
-             await temp_tts.generate_audio(text, audio_path)
+             temp_tts = TTSGenerator(voice=target_voice)
+             await temp_tts.generate_audio(tts_text, audio_path)
     
     return FileResponse(audio_path)
 
@@ -244,4 +282,5 @@ async def get_page_image(doc_id: str, page_num: int):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)

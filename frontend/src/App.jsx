@@ -1,10 +1,118 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { uploadPDF, getAudioUrl, getPageImageUrl, getDocStatus, getVoices, getLibrary, deleteBook } from './api';
-import { Upload, Play, Pause, ChevronLeft, ChevronRight, Loader2, FileText, Trash2, Home } from 'lucide-react';
+import { Upload, Play, Pause, ChevronLeft, ChevronRight, Loader2, FileText, Trash2, Home, Square, Search, Cat, Dog, Leaf, Languages } from 'lucide-react';
 import './BookStyles.css';
+
+const themes = {
+    default: {
+        id: 'default',
+        label: 'Oscuro',
+        icon: 'square',
+        bg: "bg-gradient-to-br from-indigo-900 via-purple-900 to-black text-white",
+        header: "bg-black/80 border-white/10",
+        headerText: "text-white",
+        card: "bg-white/5 border-white/10 hover:bg-white/10 text-gray-300",
+        cardTitle: "text-gray-300",
+        highlight: "text-blue-400",
+        titleGradient: "from-blue-400 to-pink-500",
+        buttonPrimary: "bg-blue-500 hover:bg-blue-400 text-white",
+        buttonSecondary: "bg-white/10 hover:bg-white/20 text-gray-400",
+        input: "bg-black/20 border-white/10 text-gray-300",
+        player: "bg-black/40 border-white/10",
+        progressColor: "bg-indigo-400",
+        iconColor: "text-indigo-400",
+        ringColor: "ring-white/50",
+        activeBg: "bg-white/20",
+        iconFill: "fill-current"
+    },
+    kitten: {
+        id: 'kitten',
+        label: 'Gatitos',
+        icon: 'cat',
+        bg: "bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 text-rose-900",
+        header: "bg-white/70 border-pink-200 shadow-sm",
+        headerText: "text-rose-900",
+        card: "bg-white/60 border-pink-200 hover:bg-white/90 text-rose-800 shadow-sm",
+        cardTitle: "text-rose-700",
+        highlight: "text-pink-500",
+        titleGradient: "from-pink-400 to-rose-500",
+        buttonPrimary: "bg-pink-400 hover:bg-pink-300 text-white",
+        buttonSecondary: "bg-white/40 hover:bg-white/60 text-rose-400",
+        input: "bg-white/50 border-pink-200 text-rose-800",
+        player: "bg-white/60 border-pink-200 shadow-xl",
+        progressColor: "bg-pink-400",
+        iconColor: "text-pink-400",
+        ringColor: "ring-pink-300",
+        activeBg: "bg-pink-100",
+        iconFill: "fill-none",
+        customIcon: "/kitten-fan.png",
+        backgroundImage: "/kitten-fan.png"
+    },
+    puppy: {
+        id: 'puppy',
+        label: 'Cowboy',
+        icon: 'dog',
+        bg: "bg-gradient-to-br from-amber-50 via-orange-50 to-stone-100 text-stone-800",
+        header: "bg-white/70 border-amber-200 shadow-sm",
+        headerText: "text-stone-800",
+        card: "bg-white/60 border-amber-200 hover:bg-white/90 text-stone-700 shadow-sm",
+        cardTitle: "text-stone-800",
+        highlight: "text-amber-600",
+        titleGradient: "from-amber-500 to-orange-600",
+        buttonPrimary: "bg-amber-500 hover:bg-amber-400 text-white",
+        buttonSecondary: "bg-white/40 hover:bg-white/60 text-stone-500",
+        input: "bg-white/50 border-amber-200 text-stone-800",
+        player: "bg-white/60 border-amber-200 shadow-xl",
+        progressColor: "bg-amber-400",
+        iconColor: "text-amber-500",
+        ringColor: "ring-amber-300",
+        activeBg: "bg-amber-100",
+        iconFill: "fill-none",
+        customIcon: "/kitten-cowboy.png",
+        backgroundImage: "/kitten-cowboy.png"
+    },
+    nature: {
+        id: 'nature',
+        label: 'Naturaleza',
+        icon: 'leaf',
+        bg: "bg-gradient-to-br from-emerald-400 via-green-500 to-teal-400 text-white", // More vibrant green
+        header: "bg-emerald-900/20 border-emerald-200/50 shadow-sm",
+        headerText: "text-emerald-950",
+        card: "bg-white/40 border-emerald-200 hover:bg-white/60 text-emerald-900 shadow-sm",
+        cardTitle: "text-emerald-900",
+        highlight: "text-emerald-700",
+        titleGradient: "from-emerald-700 to-green-800",
+        buttonPrimary: "bg-emerald-600 hover:bg-emerald-500 text-white",
+        buttonSecondary: "bg-emerald-900/10 hover:bg-emerald-900/20 text-emerald-800",
+        input: "bg-emerald-900/10 border-emerald-200 text-emerald-900",
+        player: "bg-white/40 border-emerald-200 shadow-xl",
+        progressColor: "bg-emerald-600",
+        iconColor: "text-emerald-700",
+        ringColor: "ring-emerald-500",
+        activeBg: "bg-emerald-300",
+        iconFill: "fill-none"
+    }
+};
 
 function App() {
     const [docId, setDocId] = useState(null);
+
+    // Initialize theme from localStorage or default to 'nature' for user preference
+    const [theme, setTheme] = useState(() => {
+        const saved = localStorage.getItem('amori-theme');
+        return (saved && themes[saved]) ? saved : 'nature'; // Default to nature as requested
+    });
+
+    // Safety check: Fallback to default if theme key is invalid
+    const t = themes[theme] || themes.default;
+
+    // Persist theme changes
+    useEffect(() => {
+        if (theme) localStorage.setItem('amori-theme', theme);
+    }, [theme]);
+
+
+
     const [totalPages, setTotalPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [isUploading, setIsUploading] = useState(false);
@@ -12,12 +120,14 @@ function App() {
     const [playbackRate, setPlaybackRate] = useState(1.0);
     const [voices, setVoices] = useState([]);
     const [selectedVoice, setSelectedVoice] = useState("es-AR-TomasNeural");
+    const [jumpPage, setJumpPage] = useState(""); // For the page search input
     const [library, setLibrary] = useState([]);
     const [showLibrary, setShowLibrary] = useState(true);
+    const [isTranslated, setIsTranslated] = useState(false);
     const audioRef = useRef(null);
     const autoAdvanceRef = useRef(false);
 
-    // Fetch voices
+    // Fetch voices and Library
     useEffect(() => {
         getVoices().then(setVoices).catch(console.error);
         getLibrary().then(setLibrary).catch(console.error);
@@ -34,32 +144,25 @@ function App() {
     useEffect(() => {
         if (docId && audioRef.current) {
             const currentSrc = audioRef.current.src;
-            // Only update if src changed to avoid reload loop
             if (!currentSrc.includes(selectedVoice)) {
-                // Optimization: handled by main effect if docId/page/voice causes prop change?
-                // Actually we need to force reload if voice changes but page hasn't.
-                // The next effect handles [selectedVoice] dependency too.
+                // Logic to handle voice change
             }
         }
     }, [selectedVoice]);
 
     useEffect(() => {
         if (docId && audioRef.current) {
-            audioRef.current.src = getAudioUrl(docId, currentPage, selectedVoice);
+            audioRef.current.src = getAudioUrl(docId, currentPage, selectedVoice, isTranslated);
             if (audioRef.current) {
                 audioRef.current.playbackRate = playbackRate;
             }
 
-            // Should we play? Yes if we were playing, OR if we just auto-advanced.
             if (isPlaying || autoAdvanceRef.current) {
-                console.log(`Auto-playing page ${currentPage} (Auto-advance: ${autoAdvanceRef.current})`);
-
                 const playPromise = audioRef.current.play();
                 if (playPromise !== undefined) {
                     playPromise
                         .then(() => {
                             setIsPlaying(true);
-                            // Important: Reset the ref AFTER we successfully start playing
                             autoAdvanceRef.current = false;
                         })
                         .catch(e => {
@@ -70,7 +173,7 @@ function App() {
                 }
             }
         }
-    }, [docId, currentPage, selectedVoice]);
+    }, [docId, currentPage, selectedVoice, isTranslated]);
 
     const handleUpload = async (event) => {
         const file = event.target.files[0];
@@ -81,7 +184,6 @@ function App() {
             const initData = await uploadPDF(file);
             const docId = initData.doc_id;
 
-            // Poll for status
             const pollInterval = setInterval(async () => {
                 try {
                     const statusData = await getDocStatus(docId);
@@ -115,13 +217,12 @@ function App() {
     };
 
     const handleDeleteBook = async (e, bookId) => {
-        e.stopPropagation(); // Prevent selection
+        e.stopPropagation();
         if (!window.confirm("¿Seguro que quieres eliminar este libro?")) return;
 
         try {
             await deleteBook(bookId);
             setLibrary(prev => prev.filter(b => b.doc_id !== bookId));
-            // If we deleted the current book, go back to upload
             if (docId === bookId) {
                 setDocId(null);
             }
@@ -133,17 +234,35 @@ function App() {
     };
 
     const handleAudioEnded = () => {
-        console.log("Audio ended. Current:", currentPage, "Total:", totalPages);
         if (currentPage < totalPages) {
-            console.log("Advancing to next page...");
             autoAdvanceRef.current = true;
             setCurrentPage(p => p + 1);
         } else {
-            console.log("End of book.");
             setIsPlaying(false);
         }
     };
 
+    useEffect(() => {
+        if (docId && currentPage < totalPages) {
+            const nextPage = currentPage + 1;
+            const nextAudioUrl = getAudioUrl(docId, nextPage, selectedVoice, isTranslated);
+            fetch(nextAudioUrl, { priority: 'low' }).catch(e => console.log("Prefetch harmless error:", e));
+        }
+    }, [docId, currentPage, totalPages, selectedVoice, isTranslated]);
+
+
+    useEffect(() => {
+        if (currentPage) setJumpPage(currentPage);
+    }, [currentPage]);
+
+    const handleJump = () => {
+        const val = parseInt(jumpPage);
+        if (!isNaN(val) && val >= 1 && val <= totalPages) {
+            setCurrentPage(val);
+        } else {
+            setJumpPage(currentPage);
+        }
+    };
 
     const togglePlay = () => {
         if (audioRef.current) {
@@ -156,42 +275,215 @@ function App() {
         }
     };
 
+    const handleStop = () => {
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+            setIsPlaying(false);
+        }
+    };
+
     const onPlay = () => setIsPlaying(true);
     const onPause = () => setIsPlaying(false);
 
+    const handleThemeChange = (newTheme) => {
+        setTheme(newTheme);
+    };
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-black text-white font-sans">
+        <div className={`min-h-screen font-sans transition-colors duration-500 relative ${t.bg}`}>
+            {/* Background Watermark Pattern */}
+            {t.backgroundImage && (
+                <div
+                    className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]"
+                    style={{
+                        backgroundImage: `url(${t.backgroundImage})`,
+                        backgroundRepeat: 'repeat',
+                        backgroundSize: '150px'
+                    }}
+                ></div>
+            )}
+
             {/* Sticky Header */}
-            <header className="sticky top-0 z-50 bg-black/50 backdrop-blur-md border-b border-white/10 p-4 flex items-center justify-between">
-                <div className="w-10">
-                    {/* Placeholder or Back button if reading */}
+            <header className={`sticky top-0 z-[100] backdrop-blur-md border-b p-3 shadow-lg transition-colors duration-500 relative ${t.header}`}>
+                <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+                    {/* Left: Back & Title */}
+                    <div className="flex items-center gap-4">
+                        {docId && (
+                            <button
+                                onClick={() => setDocId(null)}
+                                title="Volver a la biblioteca"
+                                className={`p-2 rounded-full transition-colors ${t.buttonSecondary}`}
+                            >
+                                <Home className={`w-6 h-6 ${t.highlight}`} />
+                            </button>
+                        )}
+                        {!docId && (
+                            <h1 className={`text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${t.titleGradient}`}>
+                                Amori
+                            </h1>
+                        )}
+                    </div>
+
+                    {/* Center/Right: Controls (Only if reading) */}
                     {docId && (
-                        <button
-                            onClick={() => setDocId(null)}
-                            title="Volver a la biblioteca"
-                            className="p-2 rounded-full hover:bg-white/10 transition-colors"
-                        >
-                            <Home className="w-6 h-6 text-blue-400" />
-                        </button>
+                        <div className="flex items-center gap-2 sm:gap-4 flex-1 justify-end">
+
+                            {/* Voice & Speed (Hidden on very small screens? No, user requested them) */}
+                            <div className={`flex items-center gap-2 rounded-lg p-1 border ${t.input}`}>
+                                <select
+                                    value={selectedVoice}
+                                    onChange={(e) => setSelectedVoice(e.target.value)}
+                                    className={`bg-transparent text-xs sm:text-sm focus:outline-none max-w-[80px] sm:max-w-[120px] truncate cursor-pointer ${theme === 'default' ? '[&>option]:bg-gray-900' : ''}`}
+                                    title="Seleccionar Voz"
+                                >
+                                    {voices.map(v => (
+                                        <option key={v.ShortName} value={v.ShortName}>{v.FriendlyName}</option>
+                                    ))}
+                                </select>
+                                <div className="w-px h-4 bg-current opacity-20"></div>
+                                <select
+                                    value={playbackRate}
+                                    onChange={(e) => setPlaybackRate(parseFloat(e.target.value))}
+                                    className={`bg-transparent text-xs sm:text-sm focus:outline-none cursor-pointer ${theme === 'default' ? '[&>option]:bg-gray-900' : ''}`}
+                                    title="Velocidad"
+                                >
+                                    <option value="0.75">0.75x</option>
+                                    <option value="1">1x</option>
+                                    <option value="1.25">1.25x</option>
+                                    <option value="1.5">1.5x</option>
+                                    <option value="2">2x</option>
+                                </select>
+                            </div>
+
+                            {/* Translation Toggle */}
+                            <button
+                                onClick={() => setIsTranslated(!isTranslated)}
+                                className={`p-2 rounded-full transition-colors relative ${isTranslated ? 'bg-indigo-500 text-white shadow-lg' : t.buttonSecondary}`}
+                                title={isTranslated ? "Traducir activado (Click para desactivar)" : "Traducir Audio"}
+                            >
+                                <Languages className={`w-5 h-5 ${isTranslated ? 'fill-current' : ''}`} />
+                                {isTranslated && (
+                                    <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500 border border-white"></span>
+                                    </span>
+                                )}
+                            </button>
+
+                            {/* Playback Controls */}
+                            <div className={`flex items-center gap-2 rounded-full p-1 border ${t.input}`}>
+                                <button
+                                    onClick={handleStop}
+                                    className="p-2 hover:bg-red-500/20 rounded-full text-red-400 hover:text-red-600 transition-colors"
+                                    title="Detener (Stop)"
+                                >
+                                    <Square className="w-4 h-4 fill-current" />
+                                </button>
+
+                                <button
+                                    onClick={togglePlay}
+                                    className={`p-2 rounded-full shadow-md transition-transform hover:scale-105 ${t.buttonPrimary}`}
+                                    title={isPlaying ? "Pausar" : "Reproducir"}
+                                >
+                                    {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current ml-0.5" />}
+                                </button>
+                            </div>
+
+                            {/* Navigation */}
+                            <div className="flex items-center gap-1">
+                                <button
+                                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                                    disabled={currentPage === 1}
+                                    className={`p-1.5 rounded-full disabled:opacity-30 ${t.buttonSecondary}`}
+                                >
+                                    <ChevronLeft className="w-6 h-6" />
+                                </button>
+
+
+                                <div className={`flex items-center rounded-full px-2 py-0.5 border focus-within:border-current transition-colors ${t.input}`}>
+                                    <input
+                                        type="number"
+                                        min="1"
+                                        max={totalPages}
+                                        value={jumpPage}
+                                        onChange={(e) => setJumpPage(e.target.value)}
+                                        onKeyDown={(e) => e.key === 'Enter' && handleJump()}
+                                        className="bg-transparent text-center w-8 sm:w-10 text-xs sm:text-sm focus:outline-none appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                        placeholder="#"
+                                    />
+                                    <button
+                                        onClick={handleJump}
+                                        className="p-1 hover:opacity-70 transition-opacity"
+                                        title="Ir a página"
+                                    >
+                                        <Search className="w-3 h-3 sm:w-4 sm:h-4" />
+                                    </button>
+                                </div>
+                                <span className="text-gray-500 text-xs select-none">/ {totalPages}</span>
+
+                                <button
+                                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                                    disabled={currentPage === totalPages}
+                                    className={`p-1.5 rounded-full disabled:opacity-30 ${t.buttonSecondary}`}
+                                >
+                                    <ChevronRight className="w-6 h-6" />
+                                </button>
+                            </div>
+                        </div>
                     )}
-                </div>
 
-                <h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-pink-500 animate-fade-in-down select-none">
-                    Amori
-                </h1>
+                    {!docId && (
+                        <div className="flex-1"></div>
+                    )}
 
-                <div className="w-10">
-                    {/* Placeholder for future menu or settings */}
+                    {/* Theme Toggles & Version */}
+                    <div className="flex items-center gap-2 ml-4 border-l border-white/10 pl-4">
+                        {Object.values(themes).map(themeConfig => {
+                            const Icon = { square: Square, cat: Cat, dog: Dog, leaf: Leaf }[themeConfig.icon];
+                            const isActive = theme === themeConfig.id;
+                            // Determine dynamic classes for visibility
+                            const activeClass = isActive
+                                ? `${themeConfig.activeBg} ring-4 ${themeConfig.ringColor}`
+                                : 'opacity-70 hover:opacity-100 hover:bg-white/10';
+
+                            return (
+                                <button
+                                    key={themeConfig.id}
+                                    onClick={() => handleThemeChange(themeConfig.id)}
+                                    // Use explicit colors from config to ensure visibility on all backgrounds
+                                    className={`relative z-50 flex items-center justify-center rounded-full transition-all cursor-pointer overflow-hidden ${activeClass}`}
+                                    style={{ width: '3cm', height: '3cm' }}
+                                    title={themeConfig.label}
+                                >
+                                    {themeConfig.customIcon ? (
+                                        <img
+                                            src={themeConfig.customIcon}
+                                            alt={themeConfig.label}
+                                            className="relative z-10 w-16 h-16 object-contain drop-shadow-md"
+                                        />
+                                    ) : (
+                                        <Icon className={`relative z-10 w-10 h-10 ${themeConfig.iconColor} ${themeConfig.iconFill}`} />
+                                    )}
+                                </button>
+                            );
+                        })}
+
+                        <div className="flex flex-col items-end text-[10px] sm:text-xs font-mono select-none px-2 opacity-30 leading-tight">
+                            <span>© 2026 Adamo</span>
+                            <span>v1.3</span>
+                        </div>
+                    </div>
                 </div>
             </header>
 
             <div className="p-8 pt-4 max-w-4xl mx-auto">
                 <div className="mb-8 text-center">
-                    <p className="text-lg text-gray-300">Transforma tus PDFs en audiolibros con voz neuronal y OCR.</p>
+                    <p className={`text-lg transition-colors ${theme === 'default' ? 'text-gray-300' : 'opacity-80'}`}>Transforma tus PDFs en audiolibros con voz neuronal y OCR.</p>
                 </div>
 
                 {!docId ? (<>
-                    <div className="upload-container backdrop-blur-lg bg-white/10 border border-white/20 rounded-3xl p-12 text-center shadow-2xl transition-all hover:bg-white/15">
+                    <div className={`upload-container backdrop-blur-lg rounded-3xl p-12 text-center shadow-2xl transition-all ${t.card}`}>
                         <input
                             type="file"
                             accept=".pdf"
@@ -213,25 +505,24 @@ function App() {
                     {library.length > 0 && (
                         <div className="mt-12 backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 shadow-2xl">
                             <div className="flex items-center justify-center gap-4 mb-6">
-                                <h2 className="text-2xl font-bold text-white text-center">Tu Biblioteca</h2>
+                                <h2 className={`text-2xl font-bold text-center ${t.headerText}`}>Tu Biblioteca</h2>
                                 <button
                                     onClick={() => setShowLibrary(!showLibrary)}
-                                    className="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-full text-xs text-gray-400 hover:text-white transition-colors border border-white/10"
+                                    className={`px-3 py-1 rounded-full text-xs transition-colors border ${t.buttonSecondary}`}
                                 >
                                     {showLibrary ? "Ocultar" : "Mostrar"}
                                 </button>
                             </div>
 
                             {showLibrary && (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 justify-items-center">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-6 justify-items-center">
                                     {library.map(book => (
                                         <div
                                             key={book.doc_id}
-                                            // Dimensions adjusted to roughly A5 (Half A4) aspect ratio and scale
-                                            // A5 is 148mm x 210mm.
-                                            // Using ~300px width and ~425px height maintains the ~1.41 aspect ratio.
-                                            style={{ width: '300px', height: '425px' }}
-                                            className="group relative flex flex-col items-center p-3 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all shadow-lg hover:shadow-xl overflow-hidden"
+                                            // Dimensions adjusted to roughly A6 (Half A5)
+                                            // ~150px width and ~212px height
+                                            style={{ width: '150px', height: '212px' }}
+                                            className={`group relative flex flex-col items-center p-3 rounded-2xl transition-all shadow-lg hover:shadow-xl overflow-hidden ${t.card}`}
                                             title={book.filename}
                                         >
 
@@ -276,7 +567,7 @@ function App() {
                     )}
                 </>
                 ) : (
-                    <div className="player-container backdrop-blur-xl bg-black/40 border border-white/10 rounded-3xl p-8 shadow-2xl flex flex-col gap-8">
+                    <div className={`player-container backdrop-blur-xl rounded-3xl p-8 shadow-2xl flex flex-col gap-8 transition-all ${t.player}`}>
                         {/* Book Viewer */}
                         <div className={`book-container ${currentPage === 1 ? 'single-page-view' : ''}`}>
                             <div className="book-spread">
@@ -342,74 +633,6 @@ function App() {
                             </div>
                         </div>
 
-                        <div className="controls flex flex-col items-center gap-4">
-                            <div className="flex items-center gap-8">
-                                <button
-                                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                                    disabled={currentPage === 1}
-                                    className="p-4 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 transition-all"
-                                >
-                                    <ChevronLeft className="w-8 h-8" />
-                                </button>
-
-                                <button
-                                    onClick={togglePlay}
-                                    className="p-6 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 hover:scale-110 transition-transform shadow-lg shadow-purple-500/30"
-                                >
-                                    {isPlaying ? <Pause className="w-10 h-10 fill-current" /> : <Play className="w-10 h-10 fill-current ml-1" />}
-                                </button>
-
-                                <button
-                                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                                    disabled={currentPage === totalPages}
-                                    className="p-4 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 transition-all"
-                                >
-                                    <ChevronRight className="w-8 h-8" />
-                                </button>
-                            </div>
-
-                            <div className="flex flex-wrap justify-center items-center gap-6 mt-2">
-                                <span className="text-gray-400 text-sm">Página {currentPage} de {totalPages}</span>
-
-                                <div className="h-4 w-px bg-white/20 hidden sm:block"></div>
-
-                                {/* Speed Selector */}
-                                <div className="flex items-center gap-2">
-                                    <span className="text-gray-400 text-sm">Vel:</span>
-                                    <select
-                                        value={playbackRate}
-                                        onChange={(e) => setPlaybackRate(parseFloat(e.target.value))}
-                                        className="bg-black/20 border border-white/10 rounded-md px-2 py-1 text-sm text-gray-300 focus:outline-none focus:border-blue-500 cursor-pointer"
-                                    >
-                                        <option value="0.5">0.5x</option>
-                                        <option value="0.75">0.75x</option>
-                                        <option value="1">1x</option>
-                                        <option value="1.25">1.25x</option>
-                                        <option value="1.5">1.5x</option>
-                                        <option value="2">2x</option>
-                                    </select>
-                                </div>
-
-                                <div className="h-4 w-px bg-white/20 hidden sm:block"></div>
-
-                                {/* Voice Selector */}
-                                <div className="flex items-center gap-2">
-                                    <span className="text-gray-400 text-sm">Voz:</span>
-                                    <select
-                                        value={selectedVoice}
-                                        onChange={(e) => setSelectedVoice(e.target.value)}
-                                        className="bg-black/20 border border-white/10 rounded-md px-2 py-1 text-sm text-gray-300 focus:outline-none focus:border-blue-500 max-w-[150px] truncate cursor-pointer"
-                                    >
-                                        {voices.map(v => (
-                                            <option key={v.ShortName} value={v.ShortName}>
-                                                {v.FriendlyName}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-
                         <div className="w-full">
                             <audio
                                 ref={audioRef}
@@ -417,7 +640,7 @@ function App() {
                                 onPlay={onPlay}
                                 onPause={onPause}
                                 controls
-                                className="w-full opacity-70 hover:opacity-100 transition-opacity"
+                                className="hidden"
                             />
                         </div>
                     </div>
