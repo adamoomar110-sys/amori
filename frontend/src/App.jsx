@@ -103,6 +103,14 @@ function App() {
         return (saved && themes[saved]) ? saved : 'nature'; // Default to nature as requested
     });
 
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     // Safety check: Fallback to default if theme key is invalid
     const t = themes[theme] || themes.default;
 
@@ -124,6 +132,10 @@ function App() {
     const [library, setLibrary] = useState([]);
     const [showLibrary, setShowLibrary] = useState(true);
     const [isTranslated, setIsTranslated] = useState(false);
+
+    // Default to Single page on mobile, Double on desktop
+    const [layoutMode, setLayoutMode] = useState(window.innerWidth < 768 ? 'single' : 'double');
+
     const audioRef = useRef(null);
     const autoAdvanceRef = useRef(false);
 
@@ -293,9 +305,10 @@ function App() {
     return (
         <div className={`min-h-screen font-sans transition-colors duration-500 relative ${t.bg}`}>
             {/* Background Watermark Pattern */}
+            {/* Background Watermark Pattern - FIXED to cover full screen */}
             {t.backgroundImage && (
                 <div
-                    className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]"
+                    className="fixed inset-0 z-0 pointer-events-none opacity-[0.03]"
                     style={{
                         backgroundImage: `url(${t.backgroundImage})`,
                         backgroundRepeat: 'repeat',
@@ -369,6 +382,18 @@ function App() {
                                         <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500 border border-white"></span>
                                     </span>
                                 )}
+                            </button>
+
+                            {/* Layout Toggle (Single/Double) */}
+                            <button
+                                onClick={() => setLayoutMode(m => m === 'single' ? 'double' : 'single')}
+                                className={`p-2 rounded-full transition-colors ${t.buttonSecondary}`}
+                                title={layoutMode === 'single' ? "Ver Doble Página" : "Ver Una Página"}
+                            >
+                                {layoutMode === 'single' ?
+                                    <div className="flex gap-0.5"><div className="w-3 h-4 border border-current rounded-sm"></div></div> :
+                                    <div className="flex gap-0.5"><div className="w-3 h-4 border border-current rounded-sm"></div><div className="w-3 h-4 border border-current rounded-sm"></div></div>
+                                }
                             </button>
 
                             {/* Playback Controls */}
@@ -477,7 +502,7 @@ function App() {
                 </div>
             </header>
 
-            <div className="p-8 pt-4 max-w-4xl mx-auto">
+            <div className="p-3 sm:p-8 pt-2 sm:pt-4 max-w-4xl mx-auto">
                 <div className="mb-8 text-center">
                     <p className={`text-lg transition-colors ${theme === 'default' ? 'text-gray-300' : 'opacity-80'}`}>Transforma tus PDFs en audiolibros con voz neuronal y OCR.</p>
                 </div>
@@ -515,48 +540,48 @@ function App() {
                             </div>
 
                             {showLibrary && (
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-6 justify-items-center">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-6 justify-items-center">
                                     {library.map(book => (
                                         <div
                                             key={book.doc_id}
-                                            // Dimensions adjusted to roughly A6 (Half A5)
-                                            // ~150px width and ~212px height
-                                            style={{ width: '150px', height: '212px' }}
-                                            className={`group relative flex flex-col items-center p-3 rounded-2xl transition-all shadow-lg hover:shadow-xl overflow-hidden ${t.card}`}
+                                            // Dimensions adjusted for mobile (smaller) vs desktop
+                                            // Using classes for width/height instead of fixed style where possible, or query
+                                            className={`group relative flex flex-col items-center p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all shadow-lg hover:shadow-xl overflow-hidden ${t.card} w-[140px] h-[200px] sm:w-[150px] sm:h-[212px]`}
                                             title={book.filename}
                                         >
 
                                             {/* Preview/Icon Area */}
-                                            <div className="relative w-full flex-1 flex items-center justify-center rounded-xl overflow-hidden mb-2 bg-black/20 group-hover:scale-105 transition-transform duration-300">
-                                                <FileText className="w-16 h-16 text-blue-400/50" />
+                                            <div className="relative w-full flex-1 flex items-center justify-center rounded-lg sm:rounded-xl overflow-hidden mb-2 bg-black/20 group-hover:scale-105 transition-transform duration-300">
+                                                {/* Increased icon size for mobile visibility */}
+                                                <FileText className="w-16 h-16 sm:w-20 sm:h-20 text-blue-400/50" />
 
                                                 {/* Play Button Overlay */}
-                                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 transition-opacity">
+                                                <div className="absolute inset-0 flex items-center justify-center opacity-100 sm:opacity-0 group-hover:opacity-100 bg-black/10 sm:bg-black/40 transition-opacity">
                                                     <button
                                                         onClick={() => handleSelectBook(book)}
-                                                        className="p-3 bg-blue-500 hover:bg-blue-400 rounded-full text-white shadow-lg hover:scale-110 transition-all transform"
+                                                        className="p-3 sm:p-4 bg-blue-500 hover:bg-blue-400 rounded-full text-white shadow-lg hover:scale-110 transition-all transform"
                                                     >
-                                                        <Play className="w-8 h-8 fill-current ml-1" />
+                                                        <Play className="w-8 h-8 sm:w-10 sm:h-10 fill-current ml-1" />
                                                     </button>
                                                 </div>
                                             </div>
 
                                             {/* Title */}
-                                            <span className="text-sm text-gray-300 font-medium truncate w-full text-center px-1">
+                                            <span className="text-xs sm:text-sm text-gray-300 font-medium truncate w-full text-center px-1">
                                                 {book.filename.replace('.pdf', '')}
                                             </span>
 
                                             {/* Top Metadata / Delete - Moved to end for stacking order safety */}
-                                            <div className="absolute top-2 right-2 z-50 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div className="absolute top-2 right-2 z-50 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     onClick={(e) => {
                                                         console.log("Delete clicked for", book.doc_id);
                                                         handleDeleteBook(e, book.doc_id);
                                                     }}
-                                                    className="p-2 bg-red-500/20 hover:bg-red-500/40 rounded-full text-red-400 hover:text-red-200 transition-colors"
+                                                    className="p-1.5 sm:p-2 bg-red-500/20 hover:bg-red-500/40 rounded-full text-red-400 hover:text-red-200 transition-colors"
                                                     title="Eliminar libro"
                                                 >
-                                                    <Trash2 className="w-4 h-4" />
+                                                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                                                 </button>
                                             </div>
                                         </div>
@@ -569,28 +594,28 @@ function App() {
                 ) : (
                     <div className={`player-container backdrop-blur-xl rounded-3xl p-8 shadow-2xl flex flex-col gap-8 transition-all ${t.player}`}>
                         {/* Book Viewer */}
-                        <div className={`book-container ${currentPage === 1 ? 'single-page-view' : ''}`}>
+                        {/* Book Viewer */}
+                        <div className={`book-container ${layoutMode === 'single' ? 'single-page-view' : ''} flex justify-center`}>
                             <div className="book-spread">
-                                {/* Spine Effect */}
-                                {currentPage > 1 && <div className="book-spine"></div>}
+                                {/* Spine Effect - Only double mode */}
+                                {currentPage > 1 && layoutMode === 'double' && <div className="book-spine"></div>}
 
-                                {currentPage === 1 ? (
-                                    // Cover Page (Page 1)
+                                {(currentPage === 1 || layoutMode === 'single') ? (
+                                    // Single Page View (Cover OR Single Mode)
                                     <div className="book-page">
                                         <img
-                                            src={getPageImageUrl(docId, 1)}
-                                            alt="Cover Page"
+                                            src={getPageImageUrl(docId, currentPage)}
+                                            alt={`Page ${currentPage}`}
                                             className="page-image"
                                         />
                                         <div className="active-reading-indicator"></div>
-                                        <span className="page-number">1</span>
+                                        <span className="page-number">{currentPage}</span>
                                     </div>
                                 ) : (
-                                    // Two Page Spread
+                                    // Two Page Spread (Desktop only)
                                     <>
                                         {/* Left Page (Even) */}
                                         <div className="book-page page-left">
-                                            {/* Logic: If current is even (e.g. 2), left is 2. If current is odd (e.g. 3), left is 2. */}
                                             {(() => {
                                                 const leftPageNum = currentPage % 2 === 0 ? currentPage : currentPage - 1;
                                                 return (

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_API_URL || '/api'; // Use env var for Prod/Android, proxy for Dev
+const API_BASE = import.meta.env.DEV ? '/api' : ''; // '/api' for Dev proxy, '' (root) for Prod/Python serving
 
 export const uploadPDF = async (file) => {
     const formData = new FormData();

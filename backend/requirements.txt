@@ -10,3 +10,5 @@ Pillow
 deep-translator
 langdetect
 gunicorn
+pyngrok
+aiofiles

@@ -1,21 +1,19 @@
 @echo off
-echo Starting Amori...
+echo Cleaning up previous processes...
+taskkill /F /IM python.exe /T >nul 2>&1
+taskkill /F /IM ngrok.exe /T >nul 2>&1
+timeout /t 2 >nul
 
-:: Start Backend
-cd /d "%~dp0backend"
-start "Amori Backend" /MIN python main.py
+echo Starting Amori Server + Ngrok Tunnel...
 
-:: Start Frontend
-cd /d "%~dp0frontend"
-start "Amori Frontend" /MIN npm run dev
+cd /d "%~dp0"
 
-:: Wait a moment for servers to spin up
-timeout /t 5 >nul
+:: Check if start_app.py exists
+if not exist "start_app.py" (
+    echo Error: start_app.py not found!
+    pause
+    exit /b
+)
 
-:: Open Browser
-start http://localhost:5173
-
-echo.
-echo Amori is running!
-echo You can close this window, but keep the Backend and Frontend windows open.
+python start_app.py
 pause

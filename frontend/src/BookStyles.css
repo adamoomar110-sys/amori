@@ -22,11 +22,16 @@
 
 .book-page {
     position: relative;
-    /* User request: Half of 215.9mm x 279.4mm */
-    /* ~108mm x 140mm => ~408px x 528px at 96DPI */
-    width: 408px;
-    height: 528px;
-    /* Remove min/max constraints to enforce size */
+    /* Responsive sizing: fit width but don't exceed screen height - padding */
+    width: 100%;
+    max-width: 500px;
+    /* Cap width on desktop */
+    aspect-ratio: 210/297;
+    /* A4 ratio approx */
+    height: auto;
+    max-height: 80vh;
+    /* Ensure it fits in screen */
+
     flex-shrink: 0;
     /* Prevent shrinking if possible, though responsive media query handles mobile */
     background: #fff;
@@ -68,7 +73,8 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
-    padding: 20px;
+    /* Ensure full image is always visible inside container */
+    padding: 10px;
 }
 
 .page-number {

@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse, Response
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import shutil
 import os
@@ -275,10 +276,33 @@ async def get_page_image(doc_id: str, page_num: int):
     file_path = documents[doc_id]["path"]
     image_bytes = pdf_processor.get_page_image(file_path, page_num)
     
+    
     if not image_bytes:
         raise HTTPException(status_code=404, detail="Page not found")
         
     return Response(content=image_bytes, media_type="image/png")
+
+# --- Static File Serving for React Frontend ---
+# Make sure "frontend/dist" exists (run 'npm run build' first)
+frontend_dist = os.path.join(os.path.dirname(os.path.dirname(__file__)), "frontend", "dist")
+assets_path = os.path.join(frontend_dist, "assets")
+
+if os.path.exists(assets_path):
+    app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
+
+@app.get("/{catchall:path}")
+async def serve_react_app(catchall: str):
+    # If the request matches a file in dist (e.g. favicon.ico), serve it
+    if os.path.exists(os.path.join(frontend_dist, catchall)) and catchall != "":
+        return FileResponse(os.path.join(frontend_dist, catchall))
+    
+    # Otherwise, serve index.html for SPA routing
+    index_path = os.path.join(frontend_dist, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    
+    return {"error": "Frontend not built. Please run 'npm run build' in frontend directory."}
+
 
 if __name__ == "__main__":
     import uvicorn
