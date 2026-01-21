@@ -42,3 +42,8 @@ export const getDocStatus = async (docId) => {
     const response = await axios.get(`${API_BASE}/document/${docId}/status`);
     return response.data;
 };
+
+export const updateProgress = async (docId, page) => {
+    const response = await axios.post(`${API_BASE}/document/${docId}/progress`, { page });
+    return response.data;
+};

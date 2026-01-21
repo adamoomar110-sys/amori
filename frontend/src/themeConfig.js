@@ -1,10 +1,10 @@
-import { Cat, Dog } from 'lucide-react';
+// import { Square, Cat, Dog, Leaf } from 'lucide-react';
 
 export const themes = {
     default: {
         id: 'default',
         label: 'Oscuro',
-        icon: 'square', // handled in UI
+        icon: 'square',
         bg: "bg-gradient-to-br from-indigo-900 via-purple-900 to-black text-white",
         header: "bg-black/80 border-white/10",
         headerText: "text-white",
@@ -16,7 +16,11 @@ export const themes = {
         buttonSecondary: "bg-white/10 hover:bg-white/20 text-gray-400",
         input: "bg-black/20 border-white/10 text-gray-300",
         player: "bg-black/40 border-white/10",
-        progressColor: "bg-indigo-400"
+        progressColor: "bg-indigo-400",
+        iconColor: "text-indigo-400",
+        ringColor: "ring-white/50",
+        activeBg: "bg-white/20",
+        iconFill: "fill-current"
     },
     kitten: {
         id: 'kitten',
@@ -33,11 +37,17 @@ export const themes = {
         buttonSecondary: "bg-white/40 hover:bg-white/60 text-rose-400",
         input: "bg-white/50 border-pink-200 text-rose-800",
         player: "bg-white/60 border-pink-200 shadow-xl",
-        progressColor: "bg-pink-400"
+        progressColor: "bg-pink-400",
+        iconColor: "text-pink-400",
+        ringColor: "ring-pink-300",
+        activeBg: "bg-pink-100",
+        iconFill: "fill-none",
+        customIcon: "/kitten-fan.png",
+        backgroundImage: "/kitten-fan.png"
     },
     puppy: {
         id: 'puppy',
-        label: 'Perritos',
+        label: 'Cowboy',
         icon: 'dog',
         bg: "bg-gradient-to-br from-amber-50 via-orange-50 to-stone-100 text-stone-800",
         header: "bg-white/70 border-amber-200 shadow-sm",
@@ -50,6 +60,33 @@ export const themes = {
         buttonSecondary: "bg-white/40 hover:bg-white/60 text-stone-500",
         input: "bg-white/50 border-amber-200 text-stone-800",
         player: "bg-white/60 border-amber-200 shadow-xl",
-        progressColor: "bg-amber-400"
+        progressColor: "bg-amber-400",
+        iconColor: "text-amber-500",
+        ringColor: "ring-amber-300",
+        activeBg: "bg-amber-100",
+        iconFill: "fill-none",
+        customIcon: "/kitten-cowboy.png",
+        backgroundImage: "/kitten-cowboy.png"
+    },
+    nature: {
+        id: 'nature',
+        label: 'Naturaleza',
+        icon: 'leaf',
+        bg: "bg-gradient-to-br from-emerald-400 via-green-500 to-teal-400 text-white", // More vibrant green
+        header: "bg-emerald-900/20 border-emerald-200/50 shadow-sm",
+        headerText: "text-emerald-950",
+        card: "bg-white/40 border-emerald-200 hover:bg-white/60 text-emerald-900 shadow-sm",
+        cardTitle: "text-emerald-900",
+        highlight: "text-emerald-700",
+        titleGradient: "from-emerald-700 to-green-800",
+        buttonPrimary: "bg-emerald-600 hover:bg-emerald-500 text-white",
+        buttonSecondary: "bg-emerald-900/10 hover:bg-emerald-900/20 text-emerald-800",
+        input: "bg-emerald-900/10 border-emerald-200 text-emerald-900",
+        player: "bg-white/40 border-emerald-200 shadow-xl",
+        progressColor: "bg-emerald-600",
+        iconColor: "text-emerald-700",
+        ringColor: "ring-emerald-500",
+        activeBg: "bg-emerald-300",
+        iconFill: "fill-none"
     }
 };

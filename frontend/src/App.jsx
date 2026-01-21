@@ -1,107 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { uploadPDF, getAudioUrl, getPageImageUrl, getDocStatus, getVoices, getLibrary, deleteBook } from './api';
-import { Upload, Play, Pause, ChevronLeft, ChevronRight, Loader2, FileText, Trash2, Home, Square, Search, Cat, Dog, Leaf, Languages } from 'lucide-react';
+import { uploadPDF, getAudioUrl, getPageImageUrl, getDocStatus, getVoices, getLibrary, deleteBook, updateProgress } from './api';
+// import { Upload, Play, Pause, ChevronLeft, ChevronRight, Loader2, FileText, Trash2, Home, Square, Search, Cat, Dog, Leaf, Languages } from 'lucide-react';
 import './BookStyles.css';
 
-const themes = {
-    default: {
-        id: 'default',
-        label: 'Oscuro',
-        icon: 'square',
-        bg: "bg-gradient-to-br from-indigo-900 via-purple-900 to-black text-white",
-        header: "bg-black/80 border-white/10",
-        headerText: "text-white",
-        card: "bg-white/5 border-white/10 hover:bg-white/10 text-gray-300",
-        cardTitle: "text-gray-300",
-        highlight: "text-blue-400",
-        titleGradient: "from-blue-400 to-pink-500",
-        buttonPrimary: "bg-blue-500 hover:bg-blue-400 text-white",
-        buttonSecondary: "bg-white/10 hover:bg-white/20 text-gray-400",
-        input: "bg-black/20 border-white/10 text-gray-300",
-        player: "bg-black/40 border-white/10",
-        progressColor: "bg-indigo-400",
-        iconColor: "text-indigo-400",
-        ringColor: "ring-white/50",
-        activeBg: "bg-white/20",
-        iconFill: "fill-current"
-    },
-    kitten: {
-        id: 'kitten',
-        label: 'Gatitos',
-        icon: 'cat',
-        bg: "bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 text-rose-900",
-        header: "bg-white/70 border-pink-200 shadow-sm",
-        headerText: "text-rose-900",
-        card: "bg-white/60 border-pink-200 hover:bg-white/90 text-rose-800 shadow-sm",
-        cardTitle: "text-rose-700",
-        highlight: "text-pink-500",
-        titleGradient: "from-pink-400 to-rose-500",
-        buttonPrimary: "bg-pink-400 hover:bg-pink-300 text-white",
-        buttonSecondary: "bg-white/40 hover:bg-white/60 text-rose-400",
-        input: "bg-white/50 border-pink-200 text-rose-800",
-        player: "bg-white/60 border-pink-200 shadow-xl",
-        progressColor: "bg-pink-400",
-        iconColor: "text-pink-400",
-        ringColor: "ring-pink-300",
-        activeBg: "bg-pink-100",
-        iconFill: "fill-none",
-        customIcon: "/kitten-fan.png",
-        backgroundImage: "/kitten-fan.png"
-    },
-    puppy: {
-        id: 'puppy',
-        label: 'Cowboy',
-        icon: 'dog',
-        bg: "bg-gradient-to-br from-amber-50 via-orange-50 to-stone-100 text-stone-800",
-        header: "bg-white/70 border-amber-200 shadow-sm",
-        headerText: "text-stone-800",
-        card: "bg-white/60 border-amber-200 hover:bg-white/90 text-stone-700 shadow-sm",
-        cardTitle: "text-stone-800",
-        highlight: "text-amber-600",
-        titleGradient: "from-amber-500 to-orange-600",
-        buttonPrimary: "bg-amber-500 hover:bg-amber-400 text-white",
-        buttonSecondary: "bg-white/40 hover:bg-white/60 text-stone-500",
-        input: "bg-white/50 border-amber-200 text-stone-800",
-        player: "bg-white/60 border-amber-200 shadow-xl",
-        progressColor: "bg-amber-400",
-        iconColor: "text-amber-500",
-        ringColor: "ring-amber-300",
-        activeBg: "bg-amber-100",
-        iconFill: "fill-none",
-        customIcon: "/kitten-cowboy.png",
-        backgroundImage: "/kitten-cowboy.png"
-    },
-    nature: {
-        id: 'nature',
-        label: 'Naturaleza',
-        icon: 'leaf',
-        bg: "bg-gradient-to-br from-emerald-400 via-green-500 to-teal-400 text-white", // More vibrant green
-        header: "bg-emerald-900/20 border-emerald-200/50 shadow-sm",
-        headerText: "text-emerald-950",
-        card: "bg-white/40 border-emerald-200 hover:bg-white/60 text-emerald-900 shadow-sm",
-        cardTitle: "text-emerald-900",
-        highlight: "text-emerald-700",
-        titleGradient: "from-emerald-700 to-green-800",
-        buttonPrimary: "bg-emerald-600 hover:bg-emerald-500 text-white",
-        buttonSecondary: "bg-emerald-900/10 hover:bg-emerald-900/20 text-emerald-800",
-        input: "bg-emerald-900/10 border-emerald-200 text-emerald-900",
-        player: "bg-white/40 border-emerald-200 shadow-xl",
-        progressColor: "bg-emerald-600",
-        iconColor: "text-emerald-700",
-        ringColor: "ring-emerald-500",
-        activeBg: "bg-emerald-300",
-        iconFill: "fill-none"
-    }
-};
+import { themes } from './themeConfig';
 
 function App() {
     const [docId, setDocId] = useState(null);
 
-    // Initialize theme from localStorage or default to 'nature' for user preference
-    const [theme, setTheme] = useState(() => {
-        const saved = localStorage.getItem('amori-theme');
-        return (saved && themes[saved]) ? saved : 'nature'; // Default to nature as requested
-    });
+    // Initialize theme
+    const [theme, setTheme] = useState('nature');
 
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
@@ -111,16 +19,16 @@ function App() {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Safety check: Fallback to default if theme key is invalid
-    const t = themes[theme] || themes.default;
+    // Helper to calculate progress percentage
+    const getProgress = (book) => {
+        if (!book.total_pages || book.total_pages === 0) return 0;
+        return Math.round((book.last_page / book.total_pages) * 100);
+    };
 
-    // Persist theme changes
-    useEffect(() => {
-        if (theme) localStorage.setItem('amori-theme', theme);
-    }, [theme]);
+    // Safety check
+    const t = themes[theme] || themes.nature;
 
-
-
+    // Save reading progress
     const [totalPages, setTotalPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [isUploading, setIsUploading] = useState(false);
@@ -128,39 +36,35 @@ function App() {
     const [playbackRate, setPlaybackRate] = useState(1.0);
     const [voices, setVoices] = useState([]);
     const [selectedVoice, setSelectedVoice] = useState("es-AR-TomasNeural");
-    const [jumpPage, setJumpPage] = useState(""); // For the page search input
+    const [jumpPage, setJumpPage] = useState("");
     const [library, setLibrary] = useState([]);
     const [showLibrary, setShowLibrary] = useState(true);
     const [isTranslated, setIsTranslated] = useState(false);
 
-    // Default to Single page on mobile, Double on desktop
     const [layoutMode, setLayoutMode] = useState(window.innerWidth < 768 ? 'single' : 'double');
 
     const audioRef = useRef(null);
     const autoAdvanceRef = useRef(false);
 
-    // Fetch voices and Library
+    useEffect(() => {
+        if (docId && currentPage) {
+            const timer = setTimeout(() => {
+                updateProgress(docId, currentPage).catch(e => console.error("Failed to save progress", e));
+            }, 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [docId, currentPage]);
+
     useEffect(() => {
         getVoices().then(setVoices).catch(console.error);
         getLibrary().then(setLibrary).catch(console.error);
     }, []);
 
-    // Update audio playback rate when state changes
     useEffect(() => {
         if (audioRef.current) {
             audioRef.current.playbackRate = playbackRate;
         }
     }, [playbackRate]);
-
-    // Re-construct audio URL when voice changes (if playing)
-    useEffect(() => {
-        if (docId && audioRef.current) {
-            const currentSrc = audioRef.current.src;
-            if (!currentSrc.includes(selectedVoice)) {
-                // Logic to handle voice change
-            }
-        }
-    }, [selectedVoice]);
 
     useEffect(() => {
         if (docId && audioRef.current) {
@@ -203,7 +107,7 @@ function App() {
                         clearInterval(pollInterval);
                         setDocId(docId);
                         setTotalPages(statusData.total_pages);
-                        setCurrentPage(1);
+                        setCurrentPage(statusData.last_page || 1);
                         setIsUploading(false);
                     } else if (statusData.status === 'error') {
                         clearInterval(pollInterval);
@@ -225,7 +129,7 @@ function App() {
     const handleSelectBook = (book) => {
         setDocId(book.doc_id);
         setTotalPages(book.total_pages || 0);
-        setCurrentPage(1);
+        setCurrentPage(book.last_page || 1);
     };
 
     const handleDeleteBook = async (e, bookId) => {
@@ -298,29 +202,10 @@ function App() {
     const onPlay = () => setIsPlaying(true);
     const onPause = () => setIsPlaying(false);
 
-    const handleThemeChange = (newTheme) => {
-        setTheme(newTheme);
-    };
-
     return (
         <div className={`min-h-screen font-sans transition-colors duration-500 relative ${t.bg}`}>
-            {/* Background Watermark Pattern */}
-            {/* Background Watermark Pattern - FIXED to cover full screen */}
-            {t.backgroundImage && (
-                <div
-                    className="fixed inset-0 z-0 pointer-events-none opacity-[0.03]"
-                    style={{
-                        backgroundImage: `url(${t.backgroundImage})`,
-                        backgroundRepeat: 'repeat',
-                        backgroundSize: '150px'
-                    }}
-                ></div>
-            )}
-
-            {/* Sticky Header */}
             <header className={`sticky top-0 z-[100] backdrop-blur-md border-b p-3 shadow-lg transition-colors duration-500 relative ${t.header}`}>
                 <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-                    {/* Left: Back & Title */}
                     <div className="flex items-center gap-4">
                         {docId && (
                             <button
@@ -328,37 +213,49 @@ function App() {
                                 title="Volver a la biblioteca"
                                 className={`p-2 rounded-full transition-colors ${t.buttonSecondary}`}
                             >
-                                <Home className={`w-6 h-6 ${t.highlight}`} />
+                                <span>Home</span>
                             </button>
                         )}
                         {!docId && (
-                            <h1 className={`text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${t.titleGradient}`}>
-                                Amori
-                            </h1>
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                <h1 className={`text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${t.titleGradient}`}>
+                                    Amori
+                                </h1>
+                                <div className="flex gap-1 ml-0 sm:ml-4">
+                                    {Object.values(themes).map(th => (
+                                        <button
+                                            key={th.id}
+                                            onClick={() => setTheme(th.id)}
+                                            className={`p-1.5 rounded-full border transition-all ${theme === th.id ? 'scale-110 shadow-md ' + t.ringColor : 'opacity-70 hover:opacity-100'} ${th.id === 'default' ? 'bg-gray-800' : th.id === 'kitten' ? 'bg-pink-300' : th.id === 'puppy' ? 'bg-amber-300' : 'bg-emerald-300'}`}
+                                            title={th.label}
+                                        >
+                                            <span className="sr-only">{th.label}</span>
+                                            <div className="w-4 h-4 rounded-full bg-current opacity-50"></div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         )}
                     </div>
 
-                    {/* Center/Right: Controls (Only if reading) */}
                     {docId && (
                         <div className="flex items-center gap-2 sm:gap-4 flex-1 justify-end">
-
-                            {/* Voice & Speed (Hidden on very small screens? No, user requested them) */}
                             <div className={`flex items-center gap-2 rounded-lg p-1 border ${t.input}`}>
                                 <select
                                     value={selectedVoice}
                                     onChange={(e) => setSelectedVoice(e.target.value)}
-                                    className={`bg-transparent text-xs sm:text-sm focus:outline-none max-w-[80px] sm:max-w-[120px] truncate cursor-pointer ${theme === 'default' ? '[&>option]:bg-gray-900' : ''}`}
+                                    className={`bg-transparent text-sm sm:text-base focus:outline-none max-w-[100px] sm:max-w-[140px] truncate cursor-pointer h-10 ${theme === 'default' ? '[&>option]:bg-gray-900' : ''}`}
                                     title="Seleccionar Voz"
                                 >
                                     {voices.map(v => (
                                         <option key={v.ShortName} value={v.ShortName}>{v.FriendlyName}</option>
                                     ))}
                                 </select>
-                                <div className="w-px h-4 bg-current opacity-20"></div>
+                                <div className="w-px h-6 bg-current opacity-20"></div>
                                 <select
                                     value={playbackRate}
                                     onChange={(e) => setPlaybackRate(parseFloat(e.target.value))}
-                                    className={`bg-transparent text-xs sm:text-sm focus:outline-none cursor-pointer ${theme === 'default' ? '[&>option]:bg-gray-900' : ''}`}
+                                    className={`bg-transparent text-sm sm:text-base focus:outline-none cursor-pointer h-10 ${theme === 'default' ? '[&>option]:bg-gray-900' : ''}`}
                                     title="Velocidad"
                                 >
                                     <option value="0.75">0.75x</option>
@@ -369,64 +266,50 @@ function App() {
                                 </select>
                             </div>
 
-                            {/* Translation Toggle */}
                             <button
                                 onClick={() => setIsTranslated(!isTranslated)}
-                                className={`p-2 rounded-full transition-colors relative ${isTranslated ? 'bg-indigo-500 text-white shadow-lg' : t.buttonSecondary}`}
-                                title={isTranslated ? "Traducir activado (Click para desactivar)" : "Traducir Audio"}
+                                className={`p-3 rounded-full transition-colors relative min-w-[44px] min-h-[44px] flex items-center justify-center ${isTranslated ? 'bg-indigo-500 text-white shadow-lg' : t.buttonSecondary}`}
                             >
-                                <Languages className={`w-5 h-5 ${isTranslated ? 'fill-current' : ''}`} />
-                                {isTranslated && (
-                                    <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-500 border border-white"></span>
-                                    </span>
-                                )}
+                                <span>Lang</span>
                             </button>
 
-                            {/* Layout Toggle (Single/Double) */}
                             <button
                                 onClick={() => setLayoutMode(m => m === 'single' ? 'double' : 'single')}
-                                className={`p-2 rounded-full transition-colors ${t.buttonSecondary}`}
-                                title={layoutMode === 'single' ? "Ver Doble Página" : "Ver Una Página"}
+                                className={`p-3 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${t.buttonSecondary}`}
                             >
                                 {layoutMode === 'single' ?
-                                    <div className="flex gap-0.5"><div className="w-3 h-4 border border-current rounded-sm"></div></div> :
-                                    <div className="flex gap-0.5"><div className="w-3 h-4 border border-current rounded-sm"></div><div className="w-3 h-4 border border-current rounded-sm"></div></div>
+                                    <span>[1]</span> :
+                                    <span>[2]</span>
                                 }
                             </button>
 
-                            {/* Playback Controls */}
-                            <div className={`flex items-center gap-2 rounded-full p-1 border ${t.input}`}>
+                            <div className={`flex items-center gap-2 rounded-full p-1.5 border ${t.input}`}>
                                 <button
                                     onClick={handleStop}
-                                    className="p-2 hover:bg-red-500/20 rounded-full text-red-400 hover:text-red-600 transition-colors"
-                                    title="Detener (Stop)"
+                                    className="p-3 hover:bg-red-500/20 rounded-full text-red-400 hover:text-red-600 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
                                 >
-                                    <Square className="w-4 h-4 fill-current" />
+                                    <span>Stop</span>
                                 </button>
 
                                 <button
                                     onClick={togglePlay}
-                                    className={`p-2 rounded-full shadow-md transition-transform hover:scale-105 ${t.buttonPrimary}`}
-                                    title={isPlaying ? "Pausar" : "Reproducir"}
+                                    className={`p-3 rounded-full shadow-md transition-transform hover:scale-105 min-w-[44px] min-h-[44px] flex items-center justify-center ${t.buttonPrimary}`}
                                 >
-                                    {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current ml-0.5" />}
+                                    {isPlaying ? <span>Pause</span> : <span>Play</span>}
                                 </button>
                             </div>
 
-                            {/* Navigation */}
                             <div className="flex items-center gap-1">
                                 <button
                                     onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                                     disabled={currentPage === 1}
-                                    className={`p-1.5 rounded-full disabled:opacity-30 ${t.buttonSecondary}`}
+                                    className={`p-2 sm:p-3 rounded-full disabled:opacity-30 min-w-[44px] min-h-[44px] flex items-center justify-center ${t.buttonSecondary}`}
                                 >
-                                    <ChevronLeft className="w-6 h-6" />
+                                    <span>{'<'}</span>
                                 </button>
 
 
-                                <div className={`flex items-center rounded-full px-2 py-0.5 border focus-within:border-current transition-colors ${t.input}`}>
+                                <div className={`flex items-center rounded-full px-3 py-1 border focus-within:border-current transition-colors h-10 ${t.input}`}>
                                     <input
                                         type="number"
                                         min="1"
@@ -434,7 +317,7 @@ function App() {
                                         value={jumpPage}
                                         onChange={(e) => setJumpPage(e.target.value)}
                                         onKeyDown={(e) => e.key === 'Enter' && handleJump()}
-                                        className="bg-transparent text-center w-8 sm:w-10 text-xs sm:text-sm focus:outline-none appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                        className="bg-transparent text-center w-10 sm:w-12 text-base focus:outline-none appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                         placeholder="#"
                                     />
                                     <button
@@ -442,17 +325,17 @@ function App() {
                                         className="p-1 hover:opacity-70 transition-opacity"
                                         title="Ir a página"
                                     >
-                                        <Search className="w-3 h-3 sm:w-4 sm:h-4" />
+                                        <span>Go</span>
                                     </button>
                                 </div>
-                                <span className="text-gray-500 text-xs select-none">/ {totalPages}</span>
+                                <span className="text-gray-500 text-xs select-none ml-1">/ {totalPages}</span>
 
                                 <button
                                     onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                                     disabled={currentPage === totalPages}
-                                    className={`p-1.5 rounded-full disabled:opacity-30 ${t.buttonSecondary}`}
+                                    className={`p-2 sm:p-3 rounded-full disabled:opacity-30 min-w-[44px] min-h-[44px] flex items-center justify-center ${t.buttonSecondary}`}
                                 >
-                                    <ChevronRight className="w-6 h-6" />
+                                    <span>{'>'}</span>
                                 </button>
                             </div>
                         </div>
@@ -461,44 +344,6 @@ function App() {
                     {!docId && (
                         <div className="flex-1"></div>
                     )}
-
-                    {/* Theme Toggles & Version */}
-                    <div className="flex items-center gap-2 ml-4 border-l border-white/10 pl-4">
-                        {Object.values(themes).map(themeConfig => {
-                            const Icon = { square: Square, cat: Cat, dog: Dog, leaf: Leaf }[themeConfig.icon];
-                            const isActive = theme === themeConfig.id;
-                            // Determine dynamic classes for visibility
-                            const activeClass = isActive
-                                ? `${themeConfig.activeBg} ring-4 ${themeConfig.ringColor}`
-                                : 'opacity-70 hover:opacity-100 hover:bg-white/10';
-
-                            return (
-                                <button
-                                    key={themeConfig.id}
-                                    onClick={() => handleThemeChange(themeConfig.id)}
-                                    // Use explicit colors from config to ensure visibility on all backgrounds
-                                    className={`relative z-50 flex items-center justify-center rounded-full transition-all cursor-pointer overflow-hidden ${activeClass}`}
-                                    style={{ width: '3cm', height: '3cm' }}
-                                    title={themeConfig.label}
-                                >
-                                    {themeConfig.customIcon ? (
-                                        <img
-                                            src={themeConfig.customIcon}
-                                            alt={themeConfig.label}
-                                            className="relative z-10 w-16 h-16 object-contain drop-shadow-md"
-                                        />
-                                    ) : (
-                                        <Icon className={`relative z-10 w-10 h-10 ${themeConfig.iconColor} ${themeConfig.iconFill}`} />
-                                    )}
-                                </button>
-                            );
-                        })}
-
-                        <div className="flex flex-col items-end text-[10px] sm:text-xs font-mono select-none px-2 opacity-30 leading-tight">
-                            <span>© 2026 Adamo</span>
-                            <span>v1.3</span>
-                        </div>
-                    </div>
                 </div>
             </header>
 
@@ -518,7 +363,7 @@ function App() {
                         />
                         <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center gap-4">
                             <div className="p-6 bg-blue-500/20 rounded-full border border-blue-400/30">
-                                {isUploading ? <Loader2 className="w-16 h-16 text-blue-400 animate-spin" /> : <Upload className="w-16 h-16 text-blue-400" />}
+                                {isUploading ? <span>Loading...</span> : <span>Upload</span>}
                             </div>
                             <span className="text-2xl font-semibold text-white">
                                 {isUploading ? "Procesando..." : "Sube tu PDF aquí"}
@@ -540,48 +385,46 @@ function App() {
                             </div>
 
                             {showLibrary && (
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 sm:gap-6 justify-items-center">
+                                <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4 sm:gap-6 justify-items-center">
                                     {library.map(book => (
                                         <div
                                             key={book.doc_id}
-                                            // Dimensions adjusted for mobile (smaller) vs desktop
-                                            // Using classes for width/height instead of fixed style where possible, or query
-                                            className={`group relative flex flex-col items-center p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all shadow-lg hover:shadow-xl overflow-hidden ${t.card} w-[140px] h-[200px] sm:w-[150px] sm:h-[212px]`}
+                                            className={`group relative flex flex-col items-center p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all shadow-lg hover:shadow-xl overflow-hidden ${t.card} w-full aspect-[3/5]`}
                                             title={book.filename}
                                         >
-
-                                            {/* Preview/Icon Area */}
                                             <div className="relative w-full flex-1 flex items-center justify-center rounded-lg sm:rounded-xl overflow-hidden mb-2 bg-black/20 group-hover:scale-105 transition-transform duration-300">
-                                                {/* Increased icon size for mobile visibility */}
-                                                <FileText className="w-16 h-16 sm:w-20 sm:h-20 text-blue-400/50" />
+                                                <span>PDF</span>
 
-                                                {/* Play Button Overlay */}
+                                                {/* Progress Bar Overlay */}
+                                                <div className="absolute bottom-0 left-0 w-full h-1.5 bg-gray-700/50">
+                                                    <div
+                                                        className={`h-full ${t.progressColor}`}
+                                                        style={{ width: `${getProgress(book)}%` }}
+                                                    ></div>
+                                                </div>
+
                                                 <div className="absolute inset-0 flex items-center justify-center opacity-100 sm:opacity-0 group-hover:opacity-100 bg-black/10 sm:bg-black/40 transition-opacity">
                                                     <button
                                                         onClick={() => handleSelectBook(book)}
-                                                        className="p-3 sm:p-4 bg-blue-500 hover:bg-blue-400 rounded-full text-white shadow-lg hover:scale-110 transition-all transform"
+                                                        className="p-3 sm:p-4 bg-blue-500 hover:bg-blue-400 rounded-full text-white shadow-lg hover:scale-110 transition-all transform flex items-center justify-center z-10"
+                                                        aria-label="Play"
                                                     >
-                                                        <Play className="w-8 h-8 sm:w-10 sm:h-10 fill-current ml-1" />
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-play ml-1"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>
                                                     </button>
                                                 </div>
                                             </div>
 
-                                            {/* Title */}
                                             <span className="text-xs sm:text-sm text-gray-300 font-medium truncate w-full text-center px-1">
                                                 {book.filename.replace('.pdf', '')}
                                             </span>
 
-                                            {/* Top Metadata / Delete - Moved to end for stacking order safety */}
                                             <div className="absolute top-2 right-2 z-50 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
-                                                    onClick={(e) => {
-                                                        console.log("Delete clicked for", book.doc_id);
-                                                        handleDeleteBook(e, book.doc_id);
-                                                    }}
-                                                    className="p-1.5 sm:p-2 bg-red-500/20 hover:bg-red-500/40 rounded-full text-red-400 hover:text-red-200 transition-colors"
+                                                    onClick={(e) => handleDeleteBook(e, book.doc_id)}
+                                                    className="p-2 sm:p-2 bg-red-500/80 hover:bg-red-500 rounded-full text-white transition-colors min-w-[32px] min-h-[32px] flex items-center justify-center shadow-md"
                                                     title="Eliminar libro"
                                                 >
-                                                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash-2"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /><line x1="10" x2="10" y1="11" y2="17" /><line x1="14" x2="14" y1="11" y2="17" /></svg>
                                                 </button>
                                             </div>
                                         </div>
@@ -593,15 +436,11 @@ function App() {
                 </>
                 ) : (
                     <div className={`player-container backdrop-blur-xl rounded-3xl p-8 shadow-2xl flex flex-col gap-8 transition-all ${t.player}`}>
-                        {/* Book Viewer */}
-                        {/* Book Viewer */}
                         <div className={`book-container ${layoutMode === 'single' ? 'single-page-view' : ''} flex justify-center`}>
                             <div className="book-spread">
-                                {/* Spine Effect - Only double mode */}
                                 {currentPage > 1 && layoutMode === 'double' && <div className="book-spine"></div>}
 
                                 {(currentPage === 1 || layoutMode === 'single') ? (
-                                    // Single Page View (Cover OR Single Mode)
                                     <div className="book-page">
                                         <img
                                             src={getPageImageUrl(docId, currentPage)}
@@ -612,9 +451,7 @@ function App() {
                                         <span className="page-number">{currentPage}</span>
                                     </div>
                                 ) : (
-                                    // Two Page Spread (Desktop only)
                                     <>
-                                        {/* Left Page (Even) */}
                                         <div className="book-page page-left">
                                             {(() => {
                                                 const leftPageNum = currentPage % 2 === 0 ? currentPage : currentPage - 1;
@@ -632,7 +469,6 @@ function App() {
                                             })()}
                                         </div>
 
-                                        {/* Right Page (Odd) */}
                                         <div className="book-page page-right">
                                             {(() => {
                                                 const leftPageNum = currentPage % 2 === 0 ? currentPage : currentPage - 1;
@@ -671,6 +507,10 @@ function App() {
                     </div>
                 )}
             </div>
+
+            <footer className="w-full text-center p-4 mt-auto text-xs opacity-60">
+                <p>Amori v1.4 &copy; {new Date().getFullYear()} Adamo. All rights reserved.</p>
+            </footer>
         </div >
     )
 }

@@ -49,9 +49,20 @@ def load_library():
 def save_to_library(book_data):
     library = load_library()
     # Check if already exists
-    for book in library:
+    for i, book in enumerate(library):
         if book["doc_id"] == book_data["doc_id"]:
+            # Preserve existing progress unless explicitly overwritten
+            if "last_page" not in book_data and "last_page" in book:
+                book_data["last_page"] = book["last_page"]
+            library[i] = book_data # Update entry
+            with open(LIBRARY_FILE, "w") as f:
+                json.dump(library, f, indent=2)
             return
+
+    # New book
+    if "last_page" not in book_data:
+        book_data["last_page"] = 1
+        
     library.append(book_data)
     with open(LIBRARY_FILE, "w") as f:
         json.dump(library, f, indent=2)
@@ -63,7 +74,8 @@ for book in startup_library:
         "path": book["path"],
         "filename": book["filename"],
         "status": "ready",
-        "pages": book.get("pages", []) # We might want to store pages in separate file if too big
+        "pages": book.get("pages", []), 
+        "last_page": book.get("last_page", 1)
     }
 
 class PageResponse(BaseModel):
@@ -75,14 +87,17 @@ class InitResponse(BaseModel):
     status: str
     filename: str
 
+class ProgressRequest(BaseModel):
+    page: int
+
 def process_pdf_background(doc_id: str, file_path: str):
     try:
-        with open(file_path, "rb") as f:
-            file_bytes = f.read()
-            pages_data = pdf_processor.process_pdf(file_bytes)
+        # Optimization: Pass file path directly to avoid loading entire file into RAM twice
+        pages_data = pdf_processor.process_pdf(file_path)
         
         documents[doc_id]["pages"] = pages_data
         documents[doc_id]["status"] = "ready"
+        documents[doc_id]["last_page"] = 1
         
         # Save to library
         save_to_library({
@@ -90,6 +105,7 @@ def process_pdf_background(doc_id: str, file_path: str):
             "filename": documents[doc_id]["filename"],
             "path": file_path,
             "total_pages": len(pages_data),
+            "last_page": 1,
             # saving pages here to persist text content. For optimization, could be separate.
             "pages": pages_data 
         })
@@ -124,7 +140,8 @@ async def upload_pdf(background_tasks: BackgroundTasks, file: UploadFile = File(
         "path": file_path,
         "filename": file.filename,
         "status": "processing",
-        "pages": []
+        "pages": [],
+        "last_page": 1
     }
     
     # Offload processing
@@ -145,8 +162,35 @@ async def get_document_status(doc_id: str):
     return {
         "status": doc["status"],
         "total_pages": len(doc["pages"]) if "pages" in doc else 0,
-        "error": doc.get("error")
+        "error": doc.get("error"),
+        "last_page": doc.get("last_page", 1)
     }
+
+@app.post("/document/{doc_id}/progress")
+async def update_progress(doc_id: str, progress: ProgressRequest):
+    if doc_id not in documents:
+        raise HTTPException(status_code=404, detail="Document not found")
+    
+    # Update in memory
+    documents[doc_id]["last_page"] = progress.page
+    
+    # Update in library file (need to load, find, update, save)
+    # Optimization: Only load/save if different to avoid excessive disk I/O?
+    # For now, let's just do it.
+    
+    library = load_library()
+    updated = False
+    for book in library:
+        if book["doc_id"] == doc_id:
+            book["last_page"] = progress.page
+            updated = True
+            break
+            
+    if updated:
+        with open(LIBRARY_FILE, "w") as f:
+            json.dump(library, f, indent=2)
+            
+    return {"status": "success", "page": progress.page}
 
 @app.get("/document/{doc_id}/pages")
 async def get_pages(doc_id: str):
@@ -158,14 +202,30 @@ async def get_pages(doc_id: str):
 async def get_voices():
     # Return a curated list of voices for simplicity
     voices = [
-        {"ShortName": "es-AR-TomasNeural", "FriendlyName": "Tomás (Argentino)"},
+        {"ShortName": "es-AR-TomasNeural", "FriendlyName": "Tomás (Argentina)"},
         {"ShortName": "es-AR-ElenaNeural", "FriendlyName": "Elena (Argentina)"},
-        {"ShortName": "es-MX-JorgeNeural", "FriendlyName": "Jorge (Mexicano)"},
-        {"ShortName": "es-MX-DaliaNeural", "FriendlyName": "Dalia (Mexicana)"},
-        {"ShortName": "es-ES-AlvaroNeural", "FriendlyName": "Álvaro (Español)"},
-        {"ShortName": "es-ES-ElviraNeural", "FriendlyName": "Elvira (Española)"},
+        {"ShortName": "es-MX-JorgeNeural", "FriendlyName": "Jorge (México)"},
+        {"ShortName": "es-MX-DaliaNeural", "FriendlyName": "Dalia (México)"},
+        {"ShortName": "es-CO-GonzaloNeural", "FriendlyName": "Gonzalo (Colombia)"},
+        {"ShortName": "es-CO-SalomeNeural", "FriendlyName": "Salome (Colombia)"},
+        {"ShortName": "es-ES-AlvaroNeural", "FriendlyName": "Álvaro (España)"},
+        {"ShortName": "es-ES-ElviraNeural", "FriendlyName": "Elvira (España)"},
+        {"ShortName": "es-US-AlonsoNeural", "FriendlyName": "Alonso (EE.UU. Latino)"},
+        {"ShortName": "es-US-PalomaNeural", "FriendlyName": "Paloma (EE.UU. Latino)"},
+        {"ShortName": "es-VE-SebastianNeural", "FriendlyName": "Sebastián (Venezuela)"},
+        {"ShortName": "es-VE-PaolaNeural", "FriendlyName": "Paola (Venezuela)"},
         {"ShortName": "en-US-GuyNeural", "FriendlyName": "Guy (English US)"},
         {"ShortName": "en-US-JennyNeural", "FriendlyName": "Jenny (English US)"},
+        {"ShortName": "en-GB-RyanNeural", "FriendlyName": "Ryan (English UK)"},
+        {"ShortName": "en-GB-SoniaNeural", "FriendlyName": "Sonia (English UK)"},
+        {"ShortName": "pt-BR-AntonioNeural", "FriendlyName": "Antônio (Brasil)"},
+        {"ShortName": "pt-BR-FranciscaNeural", "FriendlyName": "Francisca (Brasil)"},
+        {"ShortName": "fr-FR-HenriNeural", "FriendlyName": "Henri (France)"},
+        {"ShortName": "fr-FR-DeniseNeural", "FriendlyName": "Denise (France)"},
+        {"ShortName": "it-IT-DiegoNeural", "FriendlyName": "Diego (Italy)"},
+        {"ShortName": "it-IT-ElsaNeural", "FriendlyName": "Elsa (Italy)"},
+        {"ShortName": "de-DE-ConradNeural", "FriendlyName": "Conrad (Germany)"},
+        {"ShortName": "de-DE-KatjaNeural", "FriendlyName": "Katja (Germany)"},
     ]
     return voices
 

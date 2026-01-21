@@ -10,7 +10,7 @@ class PDFProcessor:
     def __init__(self):
         # Initialize EasyOCR reader (this might take a moment on first load)
         # languages: ['en', 'es'] given the user query was Spanish, likely Spanish is needed.
-        self.reader = easyocr.Reader(['es', 'en'], verbose=False) 
+        self.reader = easyocr.Reader(['es', 'en', 'pt', 'fr'], verbose=False) 
 
     def clean_text(self, text):
         """Cleans text for smoother TTS: removes newlines, fixes spacing."""
@@ -20,8 +20,13 @@ class PDFProcessor:
         text = ' '.join(text.split())
         return text
 
-    def process_pdf(self, file_bytes):
-        doc = fitz.open(stream=file_bytes, filetype="pdf")
+    def process_pdf(self, source):
+        # Support both file path (str) and bytes
+        if isinstance(source, str):
+            doc = fitz.open(source)
+        else:
+            doc = fitz.open(stream=source, filetype="pdf")
+            
         pages_data = []
 
         for page_num, page in enumerate(doc):
