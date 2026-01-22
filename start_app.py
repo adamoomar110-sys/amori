@@ -82,7 +82,19 @@ if __name__ == "__main__":
         
         print(f"Starting Local Server on port {PORT}...")
         local_ip = get_local_ip()
-        print(f"Local access: http://localhost:{PORT} or http://{local_ip}:{PORT}")
+        local_url = f"http://localhost:{PORT}"
+        print(f"Local access: {local_url} or http://{local_ip}:{PORT}")
+
+        # Auto-open browser
+        import webbrowser
+        def open_browser():
+            print("Opening browser in 3 seconds...")
+            time.sleep(3)
+            webbrowser.open(local_url)
+        
+        wb_thread = threading.Thread(target=open_browser)
+        wb_thread.daemon = True
+        wb_thread.start()
         
         # Change dir to backend to ensure imports work
         os.chdir(backend_dir)

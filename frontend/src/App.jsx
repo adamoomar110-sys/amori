@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { uploadPDF, getAudioUrl, getPageImageUrl, getDocStatus, getVoices, getLibrary, deleteBook, updateProgress } from './api';
-// import { Upload, Play, Pause, ChevronLeft, ChevronRight, Loader2, FileText, Trash2, Home, Square, Search, Cat, Dog, Leaf, Languages } from 'lucide-react';
+import { Upload, Play, Pause, ChevronLeft, ChevronRight, Loader2, FileText, Trash2, Home, Square, Search, Cat, Dog, Leaf, Languages } from 'lucide-react';
 import './BookStyles.css';
 
 import { themes } from './themeConfig';
@@ -203,7 +203,8 @@ function App() {
     const onPause = () => setIsPlaying(false);
 
     return (
-        <div className={`min-h-screen font-sans transition-colors duration-500 relative ${t.bg}`}>
+        // Added flex and flex-col to ensure footer stays at bottom
+        <div className={`min-h-screen font-sans transition-colors duration-500 relative flex flex-col ${t.bg}`}>
             <header className={`sticky top-0 z-[100] backdrop-blur-md border-b p-3 shadow-lg transition-colors duration-500 relative ${t.header}`}>
                 <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
@@ -213,7 +214,7 @@ function App() {
                                 title="Volver a la biblioteca"
                                 className={`p-2 rounded-full transition-colors ${t.buttonSecondary}`}
                             >
-                                <span>Home</span>
+                                <span>Inicio</span>
                             </button>
                         )}
                         {!docId && (
@@ -221,21 +222,33 @@ function App() {
                                 <h1 className={`text-2xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r ${t.titleGradient}`}>
                                     Amori
                                 </h1>
-                                <div className="flex gap-1 ml-0 sm:ml-4">
-                                    {Object.values(themes).map(th => (
-                                        <button
-                                            key={th.id}
-                                            onClick={() => setTheme(th.id)}
-                                            className={`p-1.5 rounded-full border transition-all ${theme === th.id ? 'scale-110 shadow-md ' + t.ringColor : 'opacity-70 hover:opacity-100'} ${th.id === 'default' ? 'bg-gray-800' : th.id === 'kitten' ? 'bg-pink-300' : th.id === 'puppy' ? 'bg-amber-300' : 'bg-emerald-300'}`}
-                                            title={th.label}
-                                        >
-                                            <span className="sr-only">{th.label}</span>
-                                            <div className="w-4 h-4 rounded-full bg-current opacity-50"></div>
-                                        </button>
-                                    ))}
-                                </div>
                             </div>
                         )}
+                        {/* Theme Switcher - Now visible always, but styled differently if needed */}
+                        <div className="flex gap-1 ml-0 sm:ml-4">
+                            {Object.values(themes).map(th => {
+                                const IconComponent = { square: Square, cat: Cat, dog: Dog, leaf: Leaf }[th.icon] || Square;
+                                return (
+                                    <button
+                                        key={th.id}
+                                        onClick={() => setTheme(th.id)}
+                                        className={`p-1.5 rounded-full border transition-all ${theme === th.id ? 'scale-110 shadow-md ' + t.ringColor : 'opacity-70 hover:opacity-100'} ${th.id === 'default' ? 'bg-gray-800' : th.id === 'kitten' ? 'bg-pink-300' : th.id === 'puppy' ? 'bg-amber-300' : 'bg-emerald-300'}`}
+                                        title={th.label}
+                                    >
+                                        <span className="sr-only">{th.label}</span>
+                                        {th.customIcon ? (
+                                            <img
+                                                src={th.customIcon}
+                                                alt={th.label}
+                                                className="w-5 h-5 rounded-full object-cover"
+                                            />
+                                        ) : (
+                                            <IconComponent size={16} className={th.id === 'default' ? 'text-white' : 'text-gray-800'} />
+                                        )}
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
 
                     {docId && (
@@ -288,14 +301,14 @@ function App() {
                                     onClick={handleStop}
                                     className="p-3 hover:bg-red-500/20 rounded-full text-red-400 hover:text-red-600 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
                                 >
-                                    <span>Stop</span>
+                                    <span>Detener</span>
                                 </button>
 
                                 <button
                                     onClick={togglePlay}
                                     className={`p-3 rounded-full shadow-md transition-transform hover:scale-105 min-w-[44px] min-h-[44px] flex items-center justify-center ${t.buttonPrimary}`}
                                 >
-                                    {isPlaying ? <span>Pause</span> : <span>Play</span>}
+                                    {isPlaying ? <span>Pausar</span> : <span>Reproducir</span>}
                                 </button>
                             </div>
 
@@ -325,7 +338,7 @@ function App() {
                                         className="p-1 hover:opacity-70 transition-opacity"
                                         title="Ir a página"
                                     >
-                                        <span>Go</span>
+                                        <span>Ir</span>
                                     </button>
                                 </div>
                                 <span className="text-gray-500 text-xs select-none ml-1">/ {totalPages}</span>
@@ -363,7 +376,7 @@ function App() {
                         />
                         <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center gap-4">
                             <div className="p-6 bg-blue-500/20 rounded-full border border-blue-400/30">
-                                {isUploading ? <span>Loading...</span> : <span>Upload</span>}
+                                {isUploading ? <span>Cargando...</span> : <span>Subir</span>}
                             </div>
                             <span className="text-2xl font-semibold text-white">
                                 {isUploading ? "Procesando..." : "Sube tu PDF aquí"}
@@ -504,9 +517,32 @@ function App() {
                                 className="hidden"
                             />
                         </div>
+                        {/* Watermark / Background Image */}
                     </div>
                 )}
             </div>
+
+            {/* Watermark / Background Image */}
+            {t.backgroundImage && (
+                t.bgRepeat ? (
+                    <div
+                        className="fixed inset-0 z-0 opacity-10 pointer-events-none select-none"
+                        style={{
+                            backgroundImage: `url(${t.backgroundImage})`,
+                            backgroundRepeat: 'space',
+                            backgroundSize: '150px'
+                        }}
+                    ></div>
+                ) : (
+                    <div className="fixed bottom-0 right-0 p-8 z-0 opacity-20 pointer-events-none select-none">
+                        <img
+                            src={t.backgroundImage}
+                            alt=""
+                            className="w-48 h-auto object-contain drop-shadow-lg"
+                        />
+                    </div>
+                )
+            )}
 
             <footer className="w-full text-center p-4 mt-auto text-xs opacity-60">
                 <p>Amori v1.4 &copy; {new Date().getFullYear()} Adamo. All rights reserved.</p>

@@ -43,7 +43,8 @@ export const themes = {
         activeBg: "bg-pink-100",
         iconFill: "fill-none",
         customIcon: "/kitten-fan.png",
-        backgroundImage: "/kitten-fan.png"
+        backgroundImage: "/kitten-fan.png",
+        bgRepeat: true
     },
     puppy: {
         id: 'puppy',
@@ -66,7 +67,8 @@ export const themes = {
         activeBg: "bg-amber-100",
         iconFill: "fill-none",
         customIcon: "/kitten-cowboy.png",
-        backgroundImage: "/kitten-cowboy.png"
+        backgroundImage: "/kitten-cowboy.png",
+        bgRepeat: true
     },
     nature: {
         id: 'nature',
