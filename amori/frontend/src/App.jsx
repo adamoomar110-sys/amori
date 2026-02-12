@@ -472,7 +472,7 @@ function App() {
                                                 {book.filename.replace('.pdf', '')}
                                             </span>
 
-                                            <div className="absolute top-2 right-2 z-50 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-2">
+                                            <div className="absolute top-2 right-2 z-50 flex flex-col gap-2">
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); handleGetSummary(book.doc_id); }}
                                                     className="p-2 sm:p-2 bg-purple-500/80 hover:bg-purple-500 rounded-full text-white transition-colors min-w-[32px] min-h-[32px] flex items-center justify-center shadow-md"
@@ -587,7 +587,7 @@ function App() {
             )}
 
             <footer className="w-full text-center p-4 mt-auto text-xs opacity-60">
-                <p>Amori v1.4 &copy; {new Date().getFullYear()} Adamo. All rights reserved.</p>
+                <p>Amori v1.5 &copy; {new Date().getFullYear()} Adamo. All rights reserved.</p>
             </footer>
         </div >
     )
