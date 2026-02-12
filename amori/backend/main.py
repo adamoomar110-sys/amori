@@ -35,6 +35,12 @@ LIBRARY_FILE = "library.json"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(AUDIO_DIR, exist_ok=True)
 
+print("="*60)
+print(" AMORI BACKEND v1.5 STARTING")
+print(" AI SUMMARY FEATURE: ENABLED")
+print(f" FRONTEND PATH: {os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend', 'dist'))}")
+print("="*60)
+
 pdf_processor = PDFProcessor()
 tts_generator = TTSGenerator()
 summarizer = Summarizer()
@@ -403,6 +409,7 @@ async def serve_react_app(catchall: str):
     if os.path.exists(index_path):
         return FileResponse(index_path)
     
+    print(f"CRITICAL ERROR: Frontend index.html not found at {index_path}")
     return {"error": "Frontend not built. Please run 'npm run build' in frontend directory."}
 
 
