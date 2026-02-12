@@ -407,7 +407,9 @@ async def serve_react_app(catchall: str):
     # Otherwise, serve index.html for SPA routing
     index_path = os.path.join(frontend_dist, "index.html")
     if os.path.exists(index_path):
-        return FileResponse(index_path)
+        resp = FileResponse(index_path)
+        resp.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, max-age=0"
+        return resp
     
     print(f"CRITICAL ERROR: Frontend index.html not found at {index_path}")
     return {"error": "Frontend not built. Please run 'npm run build' in frontend directory."}

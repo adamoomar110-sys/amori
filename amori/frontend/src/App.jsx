@@ -587,7 +587,7 @@ function App() {
             )}
 
             <footer className="w-full text-center p-4 mt-auto text-xs opacity-60">
-                <p>Amori v1.5 &copy; {new Date().getFullYear()} Adamo. All rights reserved.</p>
+                <p>Amori v1.6 &copy; {new Date().getFullYear()} Adamo. All rights reserved.</p>
             </footer>
         </div >
     )
