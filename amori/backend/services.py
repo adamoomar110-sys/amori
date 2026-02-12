@@ -1,7 +1,6 @@
 import fitz  # PyMuPDF
 import easyocr
 import edge_tts
-import asyncio
 import io
 from PIL import Image
 import numpy as np
