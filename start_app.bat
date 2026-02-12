@@ -1,19 +1,10 @@
 @echo off
-echo Cleaning up previous processes...
-taskkill /F /IM python.exe /T >nul 2>&1
-taskkill /F /IM ngrok.exe /T >nul 2>&1
-timeout /t 2 >nul
-
-echo Starting Amori Server + Ngrok Tunnel...
-
-cd /d "%~dp0"
-
-:: Check if start_app.py exists
-if not exist "start_app.py" (
-    echo Error: start_app.py not found!
+echo Redirecting to Amori v1.6...
+cd /d "%~dp0amori"
+if exist "start_app.bat" (
+    call start_app.bat
+) else (
+    echo Error: amori/start_app.bat not found!
     pause
-    exit /b
 )
 
-python start_app.py
-pause

@@ -8,7 +8,7 @@ import time
 import socket
 
 # --- CONFIGURATION ---
-PORT = 8000
+PORT = 8080
 # User provided token interactively, we will ask for it if not saved, 
 # or use the one they just gave us if I hardcode it (less secure but easier for this session),
 # or better: rely on them having run 'ngrok config add-authtoken' OR set it here.
@@ -108,7 +108,7 @@ if __name__ == "__main__":
         print("!"*60 + "\n")
         import traceback
         traceback.print_exc()
-    finally:
-        print("\nApp exited. Press Enter to close window...")
-        input()
+        print("\nApp exited.")
+        # input()  <-- Removed to support background execution
+
 
