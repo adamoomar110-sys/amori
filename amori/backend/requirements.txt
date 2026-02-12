@@ -12,3 +12,6 @@ langdetect
 gunicorn
 pyngrok
 aiofiles
+
+sumy
+nltk

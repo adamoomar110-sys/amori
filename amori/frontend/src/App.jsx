@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { uploadPDF, getAudioUrl, getPageImageUrl, getDocStatus, getVoices, getLibrary, deleteBook, updateProgress } from './api';
-import { Square, Cat, Dog, Leaf } from 'lucide-react';
+import { uploadPDF, getAudioUrl, getPageImageUrl, getDocStatus, getVoices, getLibrary, deleteBook, updateProgress, getSummary } from './api';
+import { Square, Cat, Dog, Leaf, Sparkles, X } from 'lucide-react';
 import './BookStyles.css';
 
 import { themes } from './themeConfig';
@@ -151,6 +151,25 @@ function App() {
         }
     };
 
+    const [summary, setSummary] = useState(null);
+    const [isSummaryLoading, setIsSummaryLoading] = useState(false);
+    const [showSummaryModal, setShowSummaryModal] = useState(false);
+
+    const handleGetSummary = async () => {
+        if (!docId) return;
+        setIsSummaryLoading(true);
+        setShowSummaryModal(true);
+        try {
+            const data = await getSummary(docId);
+            setSummary(data.summary);
+        } catch (error) {
+            console.error("Summary failed", error);
+            setSummary("Error al generar el resumen. Verifica tu conexión o clave API.");
+        } finally {
+            setIsSummaryLoading(false);
+        }
+    };
+
     const handleAudioEnded = () => {
         if (currentPage < totalPages) {
             autoAdvanceRef.current = true;
@@ -285,6 +304,14 @@ function App() {
                                     <option value="2">2x</option>
                                 </select>
                             </div>
+
+                            <button
+                                onClick={handleGetSummary}
+                                className={`p-3 rounded-full transition-colors relative min-w-[44px] min-h-[44px] flex items-center justify-center ${showSummaryModal ? 'bg-purple-500 text-white shadow-lg' : t.buttonSecondary}`}
+                                title="Resumen con IA"
+                            >
+                                <Sparkles size={20} />
+                            </button>
 
                             <button
                                 onClick={() => setIsTranslated(!isTranslated)}
@@ -486,6 +513,46 @@ function App() {
                     </div>
                 )}
             </div>
+
+            {/* AI Summary Modal */}
+            {showSummaryModal && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <div className={`relative max-w-2xl w-full max-h-[80vh] flex flex-col rounded-3xl shadow-2xl overflow-hidden ${t.card} border ${t.ringColor}`}>
+                        <div className={`flex items-center justify-between p-6 border-b ${t.header}`}>
+                            <h3 className={`text-xl font-bold flex items-center gap-2 ${t.headerText}`}>
+                                <Sparkles className="text-purple-500" />
+                                Resumen Inteligente
+                            </h3>
+                            <button
+                                onClick={() => setShowSummaryModal(false)}
+                                className={`p-2 rounded-full hover:bg-black/10 transition-colors ${t.buttonSecondary}`}
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-6 text-base leading-relaxed whitespace-pre-line">
+                            {isSummaryLoading ? (
+                                <div className="flex flex-col items-center justify-center py-12 gap-4">
+                                    <div className={`animate-spin rounded-full h-12 w-12 border-b-2 ${t.iconColor}`}></div>
+                                    <p className="opacity-70 animate-pulse">Analizando documento...</p>
+                                </div>
+                            ) : (
+                                <div className={t.cardTitle}>{summary}</div>
+                            )}
+                        </div>
+
+                        <div className={`p-4 border-t flex justify-end ${t.header}`}>
+                            <button
+                                onClick={() => setShowSummaryModal(false)}
+                                className={`px-6 py-2 rounded-xl font-medium transition-colors ${t.buttonPrimary}`}
+                            >
+                                Cerrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Watermark / Background Image */}
             {t.backgroundImage && (

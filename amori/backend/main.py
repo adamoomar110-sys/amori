@@ -8,6 +8,7 @@ import os
 import uuid
 from typing import List
 from services import PDFProcessor, TTSGenerator
+from ai_service import Summarizer
 from deep_translator import GoogleTranslator
 from langdetect import detect
 
@@ -36,6 +37,7 @@ os.makedirs(AUDIO_DIR, exist_ok=True)
 
 pdf_processor = PDFProcessor()
 tts_generator = TTSGenerator()
+summarizer = Summarizer()
 
 def load_library():
     if os.path.exists(LIBRARY_FILE):
@@ -341,6 +343,46 @@ async def get_page_image(doc_id: str, page_num: int):
         raise HTTPException(status_code=404, detail="Page not found")
         
     return Response(content=image_bytes, media_type="image/png")
+
+@app.post("/document/{doc_id}/summary")
+async def get_document_summary(doc_id: str):
+    if doc_id not in documents:
+        raise HTTPException(status_code=404, detail="Document not found")
+    
+    # Check if summary already exists in memory or file?
+    # For now, generate on demand or cache simple in doc object
+    if "summary" in documents[doc_id] and documents[doc_id]["summary"]:
+        return {"summary": documents[doc_id]["summary"]}
+
+    # Collect text from all pages
+    full_text = ""
+    for page in documents[doc_id]["pages"]:
+        full_text += page["text"] + "\n"
+    
+    if len(full_text.strip()) < 50:
+        return {"summary": "El documento no tiene suficiente texto para generar un resumen."}
+
+    summary = summarizer.generate_summary(full_text)
+    
+    # Save to memory
+    documents[doc_id]["summary"] = summary
+    
+    # Save to library?
+    # It would be good to persist it, but for now memory is fine or we can update library.json
+    # Updating library.json
+    library = load_library()
+    updated = False
+    for book in library:
+        if book["doc_id"] == doc_id:
+            book["summary"] = summary
+            updated = True
+            break
+    
+    if updated:
+        with open(LIBRARY_FILE, "w") as f:
+            json.dump(library, f, indent=2)
+
+    return {"summary": summary}
 
 # --- Static File Serving for React Frontend ---
 # Make sure "frontend/dist" exists (run 'npm run build' first)
