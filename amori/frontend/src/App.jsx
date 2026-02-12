@@ -123,7 +123,8 @@ function App() {
 
         } catch (error) {
             console.error("Upload failed", error);
-            alert("Error uploading file");
+            const msg = error.response?.data?.detail || error.message || "Error desconocido";
+            alert(`Error subiendo archivo: ${msg}. Verifica que el servidor (backend) esté corriendo.`);
             setIsUploading(false);
         }
     };
