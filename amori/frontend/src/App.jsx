@@ -156,12 +156,14 @@ function App() {
     const [isSummaryLoading, setIsSummaryLoading] = useState(false);
     const [showSummaryModal, setShowSummaryModal] = useState(false);
 
-    const handleGetSummary = async () => {
-        if (!docId) return;
+    const handleGetSummary = async (id = null) => {
+        const targetId = id || docId;
+        if (!targetId) return;
+
         setIsSummaryLoading(true);
         setShowSummaryModal(true);
         try {
-            const data = await getSummary(docId);
+            const data = await getSummary(targetId);
             setSummary(data.summary);
         } catch (error) {
             console.error("Summary failed", error);
@@ -470,7 +472,14 @@ function App() {
                                                 {book.filename.replace('.pdf', '')}
                                             </span>
 
-                                            <div className="absolute top-2 right-2 z-50 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <div className="absolute top-2 right-2 z-50 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-2">
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); handleGetSummary(book.doc_id); }}
+                                                    className="p-2 sm:p-2 bg-purple-500/80 hover:bg-purple-500 rounded-full text-white transition-colors min-w-[32px] min-h-[32px] flex items-center justify-center shadow-md"
+                                                    title="Resumen IA"
+                                                >
+                                                    <Sparkles size={16} />
+                                                </button>
                                                 <button
                                                     onClick={(e) => handleDeleteBook(e, book.doc_id)}
                                                     className="p-2 sm:p-2 bg-red-500/80 hover:bg-red-500 rounded-full text-white transition-colors min-w-[32px] min-h-[32px] flex items-center justify-center shadow-md"
