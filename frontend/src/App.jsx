@@ -36,7 +36,7 @@ function App() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [playbackRate, setPlaybackRate] = useState(1.0);
     const [voices, setVoices] = useState([]);
-    const [selectedVoice, setSelectedVoice] = useState("es-AR-TomasNeural");
+    const [selectedVoice, setSelectedVoice] = useState("es-VE-SebastianNeural");
     const [jumpPage, setJumpPage] = useState("");
     const [library, setLibrary] = useState([]);
     const [showLibrary, setShowLibrary] = useState(true);
@@ -371,7 +371,7 @@ function App() {
 
                                 <button
                                     onClick={togglePlay}
-                                    className={`p-3 rounded-full shadow-md transition-transform hover:scale-105 min-w-[44px] min-h-[44px] flex items-center justify-center ${t.buttonPrimary}`}
+                                    className={`p-3 rounded-full shadow-md transition-transform hover:scale-105 min-w-[100px] min-h-[44px] flex items-center justify-center ${t.buttonPrimary}`}
                                 >
                                     {isPlaying ? <span>Pausar</span> : <span>Continuar</span>}
                                 </button>
@@ -538,16 +538,17 @@ function App() {
                     )}
                 </>
                 ) : (
-                    <div className={`player-container backdrop-blur-xl rounded-3xl p-8 shadow-2xl flex flex-col gap-8 transition-all ${t.player}`}>
+                    <div className="player-container bg-zinc-900/90 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl flex flex-col gap-8 transition-all border border-white/10">
                         <div className={`book-container flex justify-center overflow-hidden`}>
                             <FlipBook
                                 ref={flipBookRef}
                                 docId={docId}
                                 totalPages={totalPages}
                                 onPageChange={(page) => setCurrentPage(page)}
-                                width={isMobile ? 300 : 450}
-                                height={isMobile ? 420 : 600}
+                                width={isMobile ? 330 : 495}
+                                height={isMobile ? 462 : 660}
                                 layoutMode={layoutMode}
+                                isTranslated={isTranslated}
                             />
                         </div>
 
