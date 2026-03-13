@@ -8,9 +8,13 @@ import os
 import uuid
 from typing import List
 from services import PDFProcessor, TTSGenerator
-from ai_service import Summarizer
+from ai_service import ClaudeService
 from deep_translator import GoogleTranslator
 from langdetect import detect
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 app = FastAPI()
 
@@ -28,9 +32,11 @@ import json
 # structure: { doc_id: { "path": str, "pages": [] } }
 documents = {}
 
-UPLOAD_DIR = "uploads"
-AUDIO_DIR = "audio_cache"
-LIBRARY_FILE = "library.json"
+# Directories
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_DIR = os.path.join(BASE_DIR, "uploads")
+AUDIO_DIR = os.path.join(BASE_DIR, "audio_cache")
+LIBRARY_FILE = os.path.join(BASE_DIR, "library.json")
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(AUDIO_DIR, exist_ok=True)
@@ -43,7 +49,7 @@ print("="*60)
 
 pdf_processor = PDFProcessor()
 tts_generator = TTSGenerator()
-summarizer = Summarizer()
+summarizer = ClaudeService()
 
 def load_library():
     if os.path.exists(LIBRARY_FILE):
@@ -442,5 +448,5 @@ async def serve_react_app(catchall: str):
 
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.environ.get("PORT", 8000))
+    port = int(os.environ.get("PORT", 8080))
     uvicorn.run(app, host="0.0.0.0", port=port)

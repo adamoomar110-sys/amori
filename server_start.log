@@ -1,0 +1,235 @@
+t=2026-02-21T03:29:17-0300 lvl=warn msg="can't bind default web address, trying alternatives" obj=web addr=127.0.0.1:4040
+ERROR:  authentication failed: Your account is limited to 3 simultaneous ngrok agent sessions.
+ERROR:  Run multiple endpoints at the same time from a single agent by defining them in your agent configuration file and running `ngrok start --all`.
+ERROR:  Read more about the agent configuration file: https://ngrok.com/docs/agent/config/ 
+ERROR:  You can view your current agent sessions in the dashboard: https://dashboard.ngrok.com/agents. Upgrade to a paid plan to remove this limit:
+ERROR:  https://dashboard.ngrok.com/billing/choose-a-plan
+ERROR:  
+ERROR:  ERR_NGROK_108
+ERROR:  https://ngrok.com/docs/errors/err_ngrok_108
+ERROR:  
+t=2026-02-21T03:29:20-0300 lvl=eror msg="failed to reconnect session" obj=tunnels.session err="authentication failed: Your account is limited to 3 simultaneous ngrok agent sessions.\nRun multiple endpoints at the same time from a single agent by defining them in your agent configuration file and running `ngrok start --all`.\nRead more about the agent configuration file: https://ngrok.com/docs/agent/config/ \nYou can view your current agent sessions in the dashboard: https://dashboard.ngrok.com/agents. Upgrade to a paid plan to remove this limit:\nhttps://dashboard.ngrok.com/billing/choose-a-plan\r\n\r\nERR_NGROK_108\r\n"
+t=2026-02-21T03:29:20-0300 lvl=eror msg="session closing" obj=tunnels.session err="authentication failed: Your account is limited to 3 simultaneous ngrok agent sessions.\nRun multiple endpoints at the same time from a single agent by defining them in your agent configuration file and running `ngrok start --all`.\nRead more about the agent configuration file: https://ngrok.com/docs/agent/config/ \nYou can view your current agent sessions in the dashboard: https://dashboard.ngrok.com/agents. Upgrade to a paid plan to remove this limit:\nhttps://dashboard.ngrok.com/billing/choose-a-plan\r\n\r\nERR_NGROK_108\r\n"
+t=2026-02-21T03:29:20-0300 lvl=eror msg="terminating with error" obj=app err="authentication failed: Your account is limited to 3 simultaneous ngrok agent sessions.\nRun multiple endpoints at the same time from a single agent by defining them in your agent configuration file and running `ngrok start --all`.\nRead more about the agent configuration file: https://ngrok.com/docs/agent/config/ \nYou can view your current agent sessions in the dashboard: https://dashboard.ngrok.com/agents. Upgrade to a paid plan to remove this limit:\nhttps://dashboard.ngrok.com/billing/choose-a-plan\r\n\r\nERR_NGROK_108\r\n"
+t=2026-02-21T03:29:20-0300 lvl=crit msg="command failed" err="authentication failed: Your account is limited to 3 simultaneous ngrok agent sessions.\nRun multiple endpoints at the same time from a single agent by defining them in your agent configuration file and running `ngrok start --all`.\nRead more about the agent configuration file: https://ngrok.com/docs/agent/config/ \nYou can view your current agent sessions in the dashboard: https://dashboard.ngrok.com/agents. Upgrade to a paid plan to remove this limit:\nhttps://dashboard.ngrok.com/billing/choose-a-plan\r\n\r\nERR_NGROK_108\r\n"
+INFO:     Started server process [13196]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+Script started...
+Waiting for server to start before opening tunnel...
+Starting Local Server on port 8000...
+Local access: http://localhost:8000 or http://192.168.0.6:8000
+Opening browser in 3 seconds...
+Connecting Ngrok to 127.0.0.1:8000...
+
+CRITICAL ERROR starting Ngrok: The ngrok process errored on start: authentication failed: Your account is limited to 3 simultaneous ngrok agent sessions.\nRun multiple endpoints at the same time from a single agent by defining them in your agent configuration file and running `ngrok start --all`.\nRead more about the agent configuration file: https://ngrok.com/docs/agent/config/ \nYou can view your current agent sessions in the dashboard: https://dashboard.ngrok.com/agents. Upgrade to a paid plan to remove this limit:\nhttps://dashboard.ngrok.com/billing/choose-a-plan\r\n\r\nERR_NGROK_108\r\n.
+Possible causes:
+1. No internet connection.
+2. Firewall. Allow 'ngrok.exe' if prompted.
+------------------------------------------------------------
+============================================================
+ AMORI BACKEND v1.6 STARTING
+ AI SUMMARY FEATURE: ENABLED
+ FRONTEND PATH: C:\Users\adamo\.gemini\antigravity\scratch\Mis_Proyectos\Amori\Amori_v16_Final\frontend\dist
+============================================================
+INFO:     127.0.0.1:58831 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58832 - "GET /assets/index-DEgO9MQS.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58831 - "GET /assets/index-DvMlUdXo.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:58831 - "GET /voices HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58832 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58832 - "GET /audio/8227b75b-5fd8-46f7-9b60-2a773bd353fc/3?voice=es-VE-SebastianNeural&translate=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58832 - "GET /audio/8227b75b-5fd8-46f7-9b60-2a773bd353fc/2?voice=es-VE-SebastianNeural&translate=false HTTP/1.1" 206 Partial Content
+INFO:     127.0.0.1:58832 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58831 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58841 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58842 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/4 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58843 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58832 - "POST /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58831 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58844 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/6 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58841 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/8 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58842 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58843 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58832 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/11 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58844 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/12 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58831 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/13 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58842 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58841 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/15 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58843 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/16 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58844 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/17 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58832 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/18 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58831 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/19 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58842 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58841 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/21 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58843 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/22 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58831 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/23 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58832 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/24 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58844 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/25 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58842 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58841 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/27 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58843 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/28 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58831 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/29 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58832 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/30 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58844 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58842 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/32 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58841 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/33 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58843 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/34 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58831 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/35 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58832 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/36 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58844 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/37 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58842 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/38 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58841 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/39 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58843 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58831 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/41 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58832 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/42 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58844 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/43 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58842 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/44 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58841 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/45 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58843 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/46 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58832 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/47 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58831 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/48 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58844 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/49 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58842 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/image/50 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58841 - "GET /audio/8227b75b-5fd8-46f7-9b60-2a773bd353fc/3?voice=es-VE-SebastianNeural&translate=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58843 - "GET /audio/8227b75b-5fd8-46f7-9b60-2a773bd353fc/2?voice=es-VE-SebastianNeural&translate=true HTTP/1.1" 206 Partial Content
+INFO:     127.0.0.1:58913 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/page/1/text?translate=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58921 - "GET /document/8227b75b-5fd8-46f7-9b60-2a773bd353fc/page/1/text?translate=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58924 - "GET /audio/8227b75b-5fd8-46f7-9b60-2a773bd353fc/1?translate=true HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63975 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63975 - "GET /assets/index-DvMlUdXo.js HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63975 - "GET /assets/index-DEgO9MQS.css HTTP/1.1" 304 Not Modified
+INFO:     127.0.0.1:63975 - "GET /voices HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63977 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63977 - "GET /audio/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/11?voice=es-VE-SebastianNeural&translate=false HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63975 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63977 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63975 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/6 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63985 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63986 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/4 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63988 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63987 - "GET /audio/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/10?voice=es-VE-SebastianNeural&translate=false HTTP/1.1" 206 Partial Content
+INFO:     127.0.0.1:63977 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63975 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/8 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63985 - "POST /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63986 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63987 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63988 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/11 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63977 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/12 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63975 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/13 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63985 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63986 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/15 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63987 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/16 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63988 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/17 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63975 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/18 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63977 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/19 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63987 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63985 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/21 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63988 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/22 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63986 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/23 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63977 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/24 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63975 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/25 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63988 - "GET / HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\adamo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\adamo\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] Se ha forzado la interrupci¾n de una conexi¾n existente por el host remoto
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\adamo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\adamo\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] Se ha forzado la interrupci¾n de una conexi¾n existente por el host remoto
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\adamo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\adamo\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] Se ha forzado la interrupci¾n de una conexi¾n existente por el host remoto
+INFO:     127.0.0.1:63985 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63988 - "GET /voices HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63987 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63985 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63988 - "GET /voices HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63985 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63988 - "GET / HTTP/1.1" 200 OK
+Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Users\adamo\AppData\Local\Programs\Python\Python312\Lib\asyncio\events.py", line 84, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Users\adamo\AppData\Local\Programs\Python\Python312\Lib\asyncio\proactor_events.py", line 165, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] Se ha forzado la interrupci¾n de una conexi¾n existente por el host remoto
+INFO:     127.0.0.1:63988 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64003 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63988 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:63988 - "GET /voices HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64009 - "GET /voices HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64008 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64009 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64010 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64010 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64010 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64010 - "GET /voices HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64010 - "GET /library HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64027 - "GET /audio/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/10?voice=es-VE-SebastianNeural&translate=false HTTP/1.1" 206 Partial Content
+INFO:     127.0.0.1:64027 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64028 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/2 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64029 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/3 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64030 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/4 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64027 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/7 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64031 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/5 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64028 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/8 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64032 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/6 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64029 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/9 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64030 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/10 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64027 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/11 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64031 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/12 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64028 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/13 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64032 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/14 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64029 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/15 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64030 - "POST /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/progress HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64027 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/16 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64028 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/17 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64031 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/18 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64032 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/19 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64029 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/20 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64030 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/21 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64027 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/22 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64028 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/23 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64031 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/24 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64029 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/25 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64032 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/26 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64030 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/27 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64027 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/28 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64029 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/29 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64032 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/30 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64031 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/31 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64028 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/32 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64027 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/33 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64030 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/34 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64031 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/35 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64032 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/36 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64029 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/37 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64028 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/38 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64027 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/39 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64030 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/40 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64028 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/41 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64032 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/42 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64029 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/43 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64031 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/44 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64030 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/45 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64027 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/46 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64031 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/47 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64029 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/48 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64032 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/49 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:64028 - "GET /document/5a893fdd-5993-4993-afb7-5ea8cfdd4f55/image/50 HTTP/1.1" 200 OK

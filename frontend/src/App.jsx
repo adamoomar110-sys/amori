@@ -258,8 +258,9 @@ function App() {
                             <button
                                 onClick={() => setDocId(null)}
                                 title="Volver a la biblioteca"
-                                className={`p-2 rounded-full transition-colors ${t.buttonSecondary}`}
+                                className={`px-4 py-2 rounded-xl transition-all duration-200 active:scale-95 flex items-center gap-2 font-bold shadow-md hover:shadow-lg ${t.buttonSecondary}`}
                             >
+                                <RotateCcw size={18} />
                                 <span>Biblioteca</span>
                             </button>
                         )}
@@ -278,7 +279,7 @@ function App() {
                                     <button
                                         key={th.id}
                                         onClick={() => setTheme(th.id)}
-                                        className={`p-1.5 rounded-full border transition-all ${theme === th.id ? 'scale-110 shadow-md ' + t.ringColor : 'opacity-70 hover:opacity-100'} ${th.id === 'default' ? 'bg-gray-800' : th.id === 'kitten' ? 'bg-pink-300' : th.id === 'puppy' ? 'bg-amber-300' : 'bg-emerald-300'}`}
+                                        className={`p-1.5 rounded-full border-2 transition-all duration-300 transform hover:scale-110 active:scale-90 ${theme === th.id ? 'shadow-lg bg-opacity-100 ' + t.ringColor : 'opacity-60 bg-opacity-40 hover:opacity-100'} ${th.id === 'default' ? 'bg-gray-800 border-gray-600' : th.id === 'kitten' ? 'bg-pink-400 border-pink-300' : th.id === 'puppy' ? 'bg-amber-400 border-amber-300' : 'bg-emerald-500 border-emerald-400'}`}
                                         title={th.label}
                                     >
                                         <span className="sr-only">{th.label}</span>
@@ -289,7 +290,7 @@ function App() {
                                                 className="w-5 h-5 rounded-full object-cover"
                                             />
                                         ) : (
-                                            <IconComponent size={16} className={th.id === 'default' ? 'text-white' : 'text-gray-800'} />
+                                            <IconComponent size={16} className={th.id === 'default' ? 'text-white' : 'text-gray-900'} />
                                         )}
                                     </button>
                                 );
@@ -303,7 +304,7 @@ function App() {
                                 <select
                                     value={selectedVoice}
                                     onChange={(e) => setSelectedVoice(e.target.value)}
-                                    className={`bg-transparent text-sm sm:text-base focus:outline-none max-w-[100px] sm:max-w-[140px] truncate cursor-pointer h-10 ${theme === 'default' ? '[&>option]:bg-gray-900' : ''}`}
+                                    className={`bg-transparent text-sm sm:text-base focus:outline-none max-w-[100px] sm:max-w-[140px] truncate cursor-pointer h-10 font-bold ${theme === 'default' ? '[&>option]:bg-gray-900' : ''}`}
                                     title="Seleccionar Voz"
                                 >
                                     {voices.map(v => (
@@ -314,7 +315,7 @@ function App() {
                                 <select
                                     value={playbackRate}
                                     onChange={(e) => setPlaybackRate(parseFloat(e.target.value))}
-                                    className={`bg-transparent text-sm sm:text-base focus:outline-none cursor-pointer h-10 ${theme === 'default' ? '[&>option]:bg-gray-900' : ''}`}
+                                    className={`bg-transparent text-sm sm:text-base focus:outline-none cursor-pointer h-10 font-bold ${theme === 'default' ? '[&>option]:bg-gray-900' : ''}`}
                                     title="Velocidad"
                                 >
                                     <option value="0.75">0.75x</option>
@@ -327,7 +328,7 @@ function App() {
 
                             <button
                                 onClick={() => handleGetSummary()}
-                                className={`p-3 rounded-full transition-colors relative min-w-[44px] min-h-[44px] flex items-center justify-center ${showSummaryModal ? 'bg-purple-500 text-white shadow-lg' : t.buttonSecondary}`}
+                                className={`p-3 rounded-full transition-all duration-200 active:scale-90 shadow-md hover:shadow-lg relative min-w-[44px] min-h-[44px] flex items-center justify-center ${showSummaryModal ? 'bg-purple-600 text-white ring-2 ring-purple-400' : t.buttonSecondary}`}
                                 title="Resumen con IA"
                             >
                                 <Sparkles size={20} />
@@ -335,18 +336,20 @@ function App() {
 
                             <button
                                 onClick={() => setIsTranslated(!isTranslated)}
-                                className={`p-3 rounded-full transition-colors relative min-w-[44px] min-h-[44px] flex items-center justify-center ${isTranslated ? 'bg-indigo-500 text-white shadow-lg' : t.buttonSecondary}`}
+                                className={`p-3 rounded-full transition-all duration-200 active:scale-90 shadow-md hover:shadow-lg relative min-w-[44px] min-h-[44px] flex items-center justify-center ${isTranslated ? 'bg-indigo-600 text-white ring-2 ring-indigo-400' : t.buttonSecondary}`}
+                                title="Traducción IA"
                             >
-                                <span>Lang</span>
+                                <span className="font-bold text-xs">A/文</span>
                             </button>
 
                             <button
                                 onClick={() => setLayoutMode(m => m === 'single' ? 'double' : 'single')}
-                                className={`p-3 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ${t.buttonSecondary}`}
+                                className={`p-3 rounded-full transition-all duration-200 active:scale-95 shadow-md hover:shadow-lg min-w-[44px] min-h-[44px] flex items-center justify-center font-bold ${t.buttonSecondary}`}
+                                title="Cambiar Diseño"
                             >
                                 {layoutMode === 'single' ?
-                                    <span>[1]</span> :
-                                    <span>[2]</span>
+                                    <span>[ 1 ]</span> :
+                                    <span>[ 2 ]</span>
                                 }
                             </button>
 
@@ -356,7 +359,7 @@ function App() {
                                         const currentBook = library.find(b => b.doc_id === docId);
                                         if (currentBook) handleRestartBook(e, currentBook);
                                     }}
-                                    className="p-3 hover:bg-amber-500/20 rounded-full text-amber-500 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+                                    className="p-3 hover:bg-amber-500/30 rounded-full text-amber-600 transition-all duration-200 active:scale-90 min-w-[44px] min-h-[44px] flex items-center justify-center"
                                     title="Reiniciar lectura"
                                 >
                                     <RotateCcw size={20} />
@@ -364,9 +367,9 @@ function App() {
 
                                 <button
                                     onClick={handleStop}
-                                    className="p-3 hover:bg-red-500/20 rounded-full text-red-400 hover:text-red-600 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+                                    className="p-3 hover:bg-red-500/30 rounded-full text-red-600 hover:text-red-700 transition-all duration-200 active:scale-90 min-w-[44px] min-h-[44px] flex items-center justify-center font-bold"
                                 >
-                                    <span>Detener</span>
+                                    <span>Stop</span>
                                 </button>
 
                                 <button
@@ -383,13 +386,13 @@ function App() {
                                         if (flipBookRef.current) flipBookRef.current.flipPrev();
                                     }}
                                     disabled={currentPage === 1}
-                                    className={`p-2 sm:p-3 rounded-full disabled:opacity-30 min-w-[44px] min-h-[44px] flex items-center justify-center ${t.buttonSecondary}`}
+                                    className={`p-2 sm:p-3 rounded-full disabled:opacity-30 transition-all duration-200 active:scale-90 shadow-md hover:shadow-lg min-w-[44px] min-h-[44px] flex items-center justify-center font-bold ${t.buttonSecondary}`}
                                 >
                                     <span>{'<'}</span>
                                 </button>
 
 
-                                <div className={`flex items-center rounded-full px-3 py-1 border focus-within:border-current transition-colors h-10 ${t.input}`}>
+                                <div className={`flex items-center rounded-full px-3 py-1 border-2 focus-within:border-current transition-all duration-300 shadow-inner h-10 ${t.input}`}>
                                     <input
                                         type="number"
                                         min="1"
@@ -397,25 +400,25 @@ function App() {
                                         value={jumpPage}
                                         onChange={(e) => setJumpPage(e.target.value)}
                                         onKeyDown={(e) => e.key === 'Enter' && handleJump()}
-                                        className="bg-transparent text-center w-10 sm:w-12 text-base focus:outline-none appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                        className="bg-transparent text-center w-10 sm:w-12 text-base font-bold focus:outline-none appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                         placeholder="#"
                                     />
                                     <button
                                         onClick={handleJump}
-                                        className="p-1 hover:opacity-70 transition-opacity"
+                                        className="p-1 hover:opacity-70 transition-opacity font-bold"
                                         title="Ir a página"
                                     >
                                         <span>Ir</span>
                                     </button>
                                 </div>
-                                <span className="text-gray-500 text-xs select-none ml-1">/ {totalPages}</span>
+                                <span className="text-gray-500 text-xs font-bold select-none ml-1">/ {totalPages}</span>
 
                                 <button
                                     onClick={() => {
                                         if (flipBookRef.current) flipBookRef.current.flipNext();
                                     }}
                                     disabled={currentPage === totalPages}
-                                    className={`p-2 sm:p-3 rounded-full disabled:opacity-30 min-w-[44px] min-h-[44px] flex items-center justify-center ${t.buttonSecondary}`}
+                                    className={`p-2 sm:p-3 rounded-full disabled:opacity-30 transition-all duration-200 active:scale-90 shadow-md hover:shadow-lg min-w-[44px] min-h-[44px] flex items-center justify-center font-bold ${t.buttonSecondary}`}
                                 >
                                     <span>{'>'}</span>
                                 </button>
@@ -444,10 +447,10 @@ function App() {
                             id="file-upload"
                         />
                         <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center gap-4">
-                            <div className="p-6 bg-blue-500/20 rounded-full border border-blue-400/30">
+                            <div className="p-6 bg-blue-500/20 rounded-full border border-blue-400/30 font-black">
                                 {isUploading ? <span>Cargando...</span> : <span>Subir</span>}
                             </div>
-                            <span className="text-2xl font-semibold text-white">
+                            <span className="text-2xl font-black text-white">
                                 {isUploading ? "Procesando..." : "Sube tu PDF aquí"}
                             </span>
                             <p className="text-gray-400">Soporta texto e imágenes (OCR)</p>
@@ -475,7 +478,7 @@ function App() {
                                             title={book.filename}
                                         >
                                             <div className="relative w-full flex-1 flex items-center justify-center rounded-lg sm:rounded-xl overflow-hidden mb-2 bg-black/20 group-hover:scale-105 transition-transform duration-300">
-                                                <span>PDF</span>
+                                                <span className="font-black">PDF</span>
 
                                                 {/* Progress Bar Overlay */}
                                                 <div className="absolute bottom-0 left-0 w-full h-1.5 bg-gray-700/50">
@@ -493,7 +496,7 @@ function App() {
                                                         title="Continuar leyendo"
                                                     >
                                                         <Play size={24} fill="currentColor" />
-                                                        <span className="text-[10px] mt-1 font-bold">CONTINUAR</span>
+                                                        <span className="text-[10px] mt-1 font-black">CONTINUAR</span>
                                                     </button>
 
                                                     {book.last_page > 1 && (
@@ -504,13 +507,13 @@ function App() {
                                                             title="Reiniciar desde el inicio"
                                                         >
                                                             <RotateCcw size={24} />
-                                                            <span className="text-[10px] mt-1 font-bold">REINICIAR</span>
+                                                            <span className="text-[10px] mt-1 font-black">REINICIAR</span>
                                                         </button>
                                                     )}
                                                 </div>
                                             </div>
 
-                                            <span className="text-xs sm:text-sm text-gray-300 font-medium truncate w-full text-center px-1">
+                                            <span className="text-xs sm:text-sm text-gray-200 font-extrabold truncate w-full text-center px-1">
                                                 {book.filename.replace('.pdf', '')}
                                             </span>
 

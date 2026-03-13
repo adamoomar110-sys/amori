@@ -1,39 +1,20 @@
-.venv/
+# Python
 __pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Node
 node_modules/
 dist/
-*.log
-.env
+dist-ssr/
+*.local
+
+# IDE
 .vscode/
 .idea/
-_pycache_/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-pip-log.txt
-pip-delete-this-directory.txt
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.log
-.git
-.hg
-.svn
-CVS
-.bzr
-.DS_Store
+
+# OS
 Thumbs.db
-ehthumbs.db
-npm-debug.log
-yarn-error.log
-test/
-tests/
-spec/
-specs/
+Desktop.ini
