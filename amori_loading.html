@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amori – Iniciando...</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(ellipse at 50% 40%, #1a0533 0%, #0d0015 60%, #000 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: Georgia, serif;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* Anillos pulsantes */
+        .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(168, 85, 247, 0.15);
+            animation: pulse 2.5s ease-in-out infinite alternate;
+        }
+        .ring:nth-child(1) { width: 270px; height: 270px; animation-duration: 1.8s; }
+        .ring:nth-child(2) { width: 360px; height: 360px; animation-duration: 2.3s; animation-delay: 0.3s; }
+        .ring:nth-child(3) { width: 450px; height: 450px; animation-duration: 2.8s; animation-delay: 0.6s; }
+
+        @keyframes pulse {
+            from { transform: scale(0.95); opacity: 0.4; }
+            to   { transform: scale(1.05); opacity: 1; }
+        }
+
+        /* Logo */
+        .logo-wrap {
+            position: relative;
+            text-align: center;
+            animation: fadeUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: scale(0.7) translateY(20px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .logo-text {
+            font-size: clamp(72px, 18vw, 140px);
+            font-weight: 900;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #e879f9 0%, #a855f7 35%, #7c3aed 65%, #4f46e5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 50px rgba(168, 85, 247, 0.7));
+            line-height: 1;
+        }
+
+        .subtitle {
+            margin-top: 14px;
+            font-size: clamp(11px, 2.5vw, 15px);
+            letter-spacing: 0.4em;
+            color: rgba(233, 213, 255, 0.65);
+            font-family: system-ui, sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        /* Status */
+        .status-wrap {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .dots {
+            display: flex;
+            gap: 8px;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(168, 85, 247, 0.7);
+            animation: bounce 1.4s ease-in-out infinite;
+        }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.7); opacity: 0.4; }
+            40%            { transform: scale(1.2); opacity: 1; }
+        }
+
+        .status-text {
+            font-size: 13px;
+            letter-spacing: 0.15em;
+            color: rgba(233, 213, 255, 0.5);
+            font-family: system-ui, sans-serif;
+            text-transform: uppercase;
+        }
+
+        /* Partículas */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 3s ease-in-out infinite alternate;
+        }
+        @keyframes float {
+            from { transform: translateY(0) translateX(0); }
+            to   { transform: translateY(-20px) translateX(10px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Anillos -->
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring"></div>
+
+    <!-- Logo -->
+    <div class="logo-wrap">
+        <div class="logo-text">AMORI</div>
+        <div class="subtitle">Tu audioteca inmersiva</div>
+    </div>
+
+    <!-- Estado -->
+    <div class="status-wrap">
+        <div class="dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+        <div class="status-text" id="status">Iniciando servidor...</div>
+    </div>
+
+    <script>
+        // Generar partículas flotantes
+        for (let i = 0; i < 14; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = 3 + (i % 4);
+            p.style.cssText = `
+                width: ${size}px; height: ${size}px;
+                background: rgba(${168 + i * 5}, ${85 + i * 8}, 247, ${0.3 + (i % 3) * 0.2});
+                top: ${10 + (i * 7) % 80}%;
+                left: ${5 + (i * 11) % 90}%;
+                animation-delay: ${i * 0.25}s;
+                animation-duration: ${3 + (i % 4)}s;
+            `;
+            document.body.appendChild(p);
+        }
+
+        // Polling hasta que el backend responda
+        const TARGET = 'http://localhost:8000';
+        const statusEl = document.getElementById('status');
+        let attempts = 0;
+
+        async function checkBackend() {
+            attempts++;
+            try {
+                // Intentamos hacer fetch al health check
+                const resp = await fetch(TARGET + '/library', {
+                    method: 'GET',
+                    signal: AbortSignal.timeout(2000)
+                });
+                if (resp.ok || resp.status < 500) {
+                    // Backend listo → redirigir
+                    statusEl.textContent = '¡Listo! Abriendo Amori...';
+                    setTimeout(() => {
+                        window.location.href = TARGET;
+                    }, 600);
+                    return;
+                }
+            } catch (e) {
+                // Todavía no responde
+            }
+
+            if (attempts < 60) { // max ~30 segundos
+                if (attempts > 10) {
+                    statusEl.textContent = 'Cargando dependencias... un momento';
+                }
+                setTimeout(checkBackend, 500);
+            } else {
+                statusEl.textContent = 'Error: El servidor no respondió. Cerrá y volvé a abrir Amori.';
+            }
+        }
+
+        // Empezar a verificar después de 1 segundo
+        setTimeout(checkBackend, 1000);
+    </script>
+</body>
+</html>

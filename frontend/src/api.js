@@ -2,10 +2,19 @@ import axios from 'axios';
 
 const API_BASE = import.meta.env.DEV ? '/api' : ''; // '/api' for Dev proxy, '' (root) for Prod/Python serving
 
+// Credenciales para Basic Auth (admin:amori)
+const AUTH_HEADER = 'Basic ' + btoa('admin:amori');
+axios.defaults.headers.common['Authorization'] = AUTH_HEADER;
+
 export const uploadPDF = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
-    const response = await axios.post(`${API_BASE}/upload`, formData);
+    const response = await axios.post(`${API_BASE}/document/upload`, formData);
+    return response.data;
+};
+
+export const uploadPDFFromUrl = async (url) => {
+    const response = await axios.post(`${API_BASE}/document/upload-url`, { url });
     return response.data;
 };
 

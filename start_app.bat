@@ -1,5 +1,5 @@
 @echo off
-echo Redirecting to Amori v1.6...
+echo Redirecting to Amori v1.8...
 cd /d "%~dp0amori"
 if exist "start_app.bat" (
     call start_app.bat

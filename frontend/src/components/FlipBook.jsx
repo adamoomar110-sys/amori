@@ -1,8 +1,7 @@
 import React, { useCallback, forwardRef, useRef, useImperativeHandle, useEffect } from 'react';
 import HTMLFlipBook from 'react-pageflip';
-import { getPageImageUrl } from '../api';
+import { getPageImageUrl, getPageText } from '../api';
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { ZoomIn, ZoomOut, Maximize } from 'lucide-react';
 
 const Page = forwardRef((props, ref) => {
     const [pageText, setPageText] = React.useState("");
@@ -39,20 +38,66 @@ const Page = forwardRef((props, ref) => {
             </div>
 
             {props.isTranslated && (
-                <div className="absolute inset-0 z-30 bg-white/90 backdrop-blur-[2px] p-6 sm:p-10 flex flex-col items-center justify-center overflow-y-auto">
-                    {isLoading ? (
-                        <div className="flex flex-col items-center gap-2 opacity-50">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
-                            <span className="text-xs font-medium text-indigo-600">Traduciendo...</span>
-                        </div>
-                    ) : (
-                        <div className="text-gray-800 text-sm sm:text-base leading-relaxed font-sans text-center max-w-prose animate-in fade-in duration-500">
-                            {pageText.split('\n').map((line, i) => (
-                                <p key={i} className="mb-4">{line}</p>
-                            ))}
-                        </div>
-                    )}
-                    <div className="absolute top-2 right-2 px-2 py-1 bg-indigo-500 text-white text-[10px] rounded-full font-bold shadow-sm uppercase tracking-wider">
+                <div
+                    className="absolute inset-0 z-30 overflow-hidden"
+                    style={{
+                        background: 'linear-gradient(160deg, #fefaf2 0%, #fdf6e3 40%, #fef8ed 70%, #fefaf2 100%)',
+                    }}
+                >
+                    {/* Imagen original como referencia de layout al fondo */}
+                    <img
+                        src={props.image}
+                        alt=""
+                        aria-hidden="true"
+                        className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none"
+                        style={{ opacity: 0.07 }}
+                    />
+
+                    {/* Líneas decorativas de márgenes */}
+                    <div className="absolute top-8 bottom-8 left-10 w-px bg-amber-300/40 pointer-events-none" />
+                    <div className="absolute top-8 bottom-8 right-10 w-px bg-amber-300/40 pointer-events-none" />
+
+                    {/* Contenido traducido */}
+                    <div className="absolute inset-0 overflow-y-auto px-8 py-10 flex flex-col">
+                        {isLoading ? (
+                            <div className="flex flex-col items-center justify-center h-full gap-3 opacity-60">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600"></div>
+                                <span className="text-xs font-serif italic text-amber-800">Traduciendo...</span>
+                            </div>
+                        ) : (
+                            <div
+                                className="text-gray-900 leading-relaxed w-full"
+                                style={{
+                                    fontFamily: "'Georgia', 'Times New Roman', serif",
+                                    // Heurística de tamaño según cantidad de texto para imitar títulos vs cuerpo
+                                    fontSize: pageText.length < 150 ? '22px' : '16px',
+                                    textAlign: pageText.length < 150 ? 'center' : 'justify',
+                                    fontWeight: pageText.length < 150 ? 'bold' : 'normal',
+                                }}
+                            >
+                                {pageText.split('\n').filter(l => l.trim()).map((line, i) => (
+                                    <p
+                                        key={i}
+                                        style={{
+                                            marginBottom: '0.8em',
+                                            textIndent: (pageText.length > 200 && i > 0) ? '1.5em' : '0',
+                                            lineHeight: 1.6,
+                                            textTransform: pageText.length < 80 ? 'uppercase' : 'none',
+                                            letterSpacing: pageText.length < 80 ? '0.05em' : 'normal',
+                                        }}
+                                    >
+                                        {line}
+                                    </p>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Badge traducción */}
+                    <div
+                        className="absolute top-2 right-2 px-2 py-0.5 text-white text-[9px] rounded font-bold uppercase tracking-widest shadow"
+                        style={{ background: 'rgba(180,120,40,0.85)' }}
+                    >
                         Traducción IA
                     </div>
                 </div>
@@ -66,69 +111,58 @@ const Page = forwardRef((props, ref) => {
             <div className="absolute top-0 bottom-0 left-0 w-[2px] bg-black/5 z-20"></div>
         </div>
     );
+
 });
-
-
 
 const FlipBook = forwardRef(({ docId, totalPages, onPageChange, width = 450, height = 650, layoutMode = 'double', isTranslated = false }, ref) => {
     const bookRef = useRef();
 
     useImperativeHandle(ref, () => ({
-        flipNext: () => {
-            bookRef.current?.pageFlip()?.flipNext();
-        },
-        flipPrev: () => {
-            bookRef.current?.pageFlip()?.flipPrev();
-        },
-        turnToPage: (pageNum) => {
-            // react-pageflip uses 0-index
-            bookRef.current?.pageFlip()?.turnToPage(pageNum - 1);
-        },
-        destroy: () => {
-            bookRef.current?.pageFlip()?.destroy();
-        }
+        flipNext: () => bookRef.current?.pageFlip()?.flipNext(),
+        flipPrev: () => bookRef.current?.pageFlip()?.flipPrev(),
+        turnToPage: (pageNum) => bookRef.current?.pageFlip()?.turnToPage(pageNum - 1),
+        destroy: () => bookRef.current?.pageFlip()?.destroy()
     }));
 
     const onFlip = useCallback((e) => {
-        // e.data is the new page index (0-based)
         if (onPageChange) {
             onPageChange(e.data + 1);
         }
     }, [onPageChange]);
 
     return (
-        <div className="relative w-full h-full flex flex-col items-center justify-center">
+        <div className="w-full h-full flex justify-center items-center overflow-visible">
             <TransformWrapper
                 initialScale={1}
                 minScale={0.5}
-                maxScale={3}
+                maxScale={4}
                 centerOnInit={true}
-                disablePadding={true}
+                centerZoomedOut={true}
+                disablePadding={false}
             >
-                {({ zoomIn, zoomOut, resetTransform }) => (
-                    <>
-                        <div className="absolute top-4 right-4 z-50 flex flex-col gap-2 bg-white/80 backdrop-blur-sm p-2 rounded-lg shadow-lg border border-gray-200">
-                            <button onClick={() => zoomIn()} className="p-2 hover:bg-gray-100 rounded-full text-gray-700" title="Zoom In">
-                                <ZoomIn size={20} />
-                            </button>
-                            <button onClick={() => zoomOut()} className="p-2 hover:bg-gray-100 rounded-full text-gray-700" title="Zoom Out">
-                                <ZoomOut size={20} />
-                            </button>
-                            <button onClick={() => resetTransform()} className="p-2 hover:bg-gray-100 rounded-full text-gray-700" title="Reset Zoom">
-                                <Maximize size={20} />
-                            </button>
-                        </div>
+                {({ zoomIn, zoomOut, resetTransform }) => {
+                    useEffect(() => {
+                        window.amoriZoomIn = () => zoomIn();
+                        window.amoriZoomOut = () => zoomOut();
+                        window.amoriResetZoom = () => resetTransform();
+                        return () => {
+                            delete window.amoriZoomIn;
+                            delete window.amoriZoomOut;
+                            delete window.amoriResetZoom;
+                        };
+                    }, [zoomIn, zoomOut, resetTransform]);
 
-                        <TransformComponent wrapperClass="!w-full !h-full flex items-center justify-center" contentClass="flex items-center justify-center">
-                            <div className="py-10">
+                    return (
+                        <TransformComponent wrapperClass="!max-w-none !max-h-none !overflow-visible flex items-center justify-center">
+                            <div className="flex justify-center items-center p-4">
                                 <HTMLFlipBook
                                     width={width}
                                     height={height}
                                     size="stretch"
-                                    minWidth={300}
-                                    maxWidth={600}
-                                    minHeight={400}
-                                    maxHeight={800}
+                                    minWidth={200}
+                                    maxWidth={1200}
+                                    minHeight={300}
+                                    maxHeight={1600}
                                     maxShadowOpacity={0.5}
                                     showCover={true}
                                     mobileScrollSupport={true}
@@ -139,9 +173,7 @@ const FlipBook = forwardRef(({ docId, totalPages, onPageChange, width = 450, hei
                                     onFlip={onFlip}
                                     ref={bookRef}
                                     className="shadow-2xl"
-                                    style={{ margin: "0 auto" }}
                                 >
-                                    {/* Generate pages dynamically */}
                                     {Array.from({ length: totalPages }).map((_, index) => (
                                         <Page
                                             key={index}
@@ -154,8 +186,8 @@ const FlipBook = forwardRef(({ docId, totalPages, onPageChange, width = 450, hei
                                 </HTMLFlipBook>
                             </div>
                         </TransformComponent>
-                    </>
-                )}
+                    );
+                }}
             </TransformWrapper>
         </div>
     );

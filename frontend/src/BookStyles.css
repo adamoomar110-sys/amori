@@ -140,3 +140,162 @@
         display: none;
     }
 }
+
+/* =============================================
+   MODO PANTALLA COMPLETA
+   ============================================= */
+
+/* Cuando el documento está en fullscreen, el player ocupa todo */
+:fullscreen .fullscreen-player,
+:-webkit-full-screen .fullscreen-player {
+    position: fixed !important;
+    inset: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    border: none !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: #0a0a0f !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 9999 !important;
+}
+
+:fullscreen .fullscreen-player .book-container,
+:-webkit-full-screen .fullscreen-player .book-container {
+    flex: 1;
+    padding: 0;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Overlay de controles - barra inferior flotante */
+.fs-controls-overlay {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+/* Barra de progreso delgada arriba del overlay */
+.fs-progress-bar {
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.fs-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6ee7b7, #3b82f6);
+    transition: width 0.5s ease;
+    border-radius: 0 3px 3px 0;
+}
+
+/* Barra de controles con glassmorphism */
+.fs-controls-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px 28px;
+    background: rgba(10, 10, 20, 0.75);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Contador de páginas */
+.fs-page-info {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    min-width: 70px;
+    text-align: center;
+}
+
+.fs-page-sep {
+    color: rgba(255, 255, 255, 0.3);
+    margin: 0 2px;
+}
+
+/* Botón base */
+.fs-btn {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fs-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: white;
+    transform: scale(1.07);
+}
+
+.fs-btn:active:not(:disabled) {
+    transform: scale(0.94);
+}
+
+.fs-btn:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+}
+
+/* Botón PLAY - grande y destacado */
+.fs-btn-play {
+    width: 66px;
+    height: 66px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #3b82f6, #6366f1);
+    border: none;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.5);
+    color: white;
+}
+
+.fs-btn-play:hover {
+    background: linear-gradient(135deg, #60a5fa, #818cf8) !important;
+    box-shadow: 0 6px 28px rgba(99, 102, 241, 0.7) !important;
+    transform: scale(1.1) !important;
+}
+
+/* Botón STOP */
+.fs-btn-stop {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.2);
+}
+
+.fs-btn-stop:hover:not(:disabled) {
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+    color: #fca5a5 !important;
+}
+
+/* Botón salir fullscreen */
+.fs-btn-exit {
+    margin-left: 16px;
+    border-color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.fs-btn-exit:hover:not(:disabled) {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+}
