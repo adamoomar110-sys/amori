@@ -5,6 +5,8 @@ const API_BASE = import.meta.env.DEV ? '/api' : ''; // '/api' for Dev proxy, '' 
 // Credenciales para Basic Auth (admin:amori)
 const AUTH_HEADER = 'Basic ' + btoa('admin:amori');
 axios.defaults.headers.common['Authorization'] = AUTH_HEADER;
+// Bypass de la página de advertencia de Ngrok
+axios.defaults.headers.common['ngrok-skip-browser-warning'] = 'true';
 
 export const uploadPDF = async (file) => {
     const formData = new FormData();

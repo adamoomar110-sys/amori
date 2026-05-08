@@ -5,7 +5,7 @@ AMORI Backend v2.0
 - Basic Auth para proteger acceso remoto (Ngrok)
 - Credenciales configurables via variables de entorno o .env
 """
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -56,7 +56,7 @@ if os.path.exists(assets_path):
 
 
 @app.get("/{catchall:path}")
-async def serve_react_app(catchall: str):
+async def serve_react_app(catchall: str, username: str = Depends(verify_credentials)):
     """Sirve el SPA de React para cualquier ruta no reconocida como API."""
     full_path = os.path.join(frontend_dist, catchall)
     if catchall and os.path.exists(full_path):
